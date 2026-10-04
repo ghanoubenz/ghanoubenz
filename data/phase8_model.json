@@ -1,0 +1,1358 @@
+{
+ "cases": {
+  "BASE": {
+   "case": "BASE",
+   "capex_dzd": 10789300,
+   "capex_usd": 81123,
+   "peak_operating_loss_dzd": 1843820,
+   "working_capital_dzd": 2789500,
+   "peak_cash_need_dzd": 14334160,
+   "peak_cash_need_usd": 107776,
+   "y1_revenue": 6647125,
+   "y1_ebitda": 265119,
+   "y2_revenue": 19074000,
+   "y2_ebitda": 8052792,
+   "first_profitable_month": 9,
+   "m24_machine_hours": 113,
+   "monthly": [
+    {
+     "month": 1,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -780000
+    },
+    {
+     "month": 2,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -3094650
+    },
+    {
+     "month": 3,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -7510035
+    },
+    {
+     "month": 4,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 382630,
+     "ebitda": -382630,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -9187930
+    },
+    {
+     "month": 5,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 446260,
+     "ebitda": -446260,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -12543565
+    },
+    {
+     "month": 6,
+     "revenue": 189292,
+     "variable": 38549,
+     "fixed": 446260,
+     "ebitda": -295518,
+     "machine_hours": 5,
+     "two_shifts": false,
+     "cash_balance": -13748353
+    },
+    {
+     "month": 7,
+     "revenue": 380783,
+     "variable": 94785,
+     "fixed": 446260,
+     "ebitda": -160261,
+     "machine_hours": 18,
+     "two_shifts": false,
+     "cash_balance": -14099006
+    },
+    {
+     "month": 8,
+     "revenue": 581275,
+     "variable": 154166,
+     "fixed": 446260,
+     "ebitda": -19151,
+     "machine_hours": 30,
+     "two_shifts": false,
+     "cash_balance": -14314149
+    },
+    {
+     "month": 9,
+     "revenue": 1125700,
+     "variable": 326992,
+     "fixed": 446260,
+     "ebitda": 352448,
+     "machine_hours": 81,
+     "two_shifts": false,
+     "cash_balance": -14334160
+    },
+    {
+     "month": 10,
+     "revenue": 1310125,
+     "variable": 379818,
+     "fixed": 446260,
+     "ebitda": 484047,
+     "machine_hours": 92,
+     "two_shifts": false,
+     "cash_balance": -14214538
+    },
+    {
+     "month": 11,
+     "revenue": 1494550,
+     "variable": 432645,
+     "fixed": 446260,
+     "ebitda": 615645,
+     "machine_hours": 103,
+     "two_shifts": false,
+     "cash_balance": -13783318
+    },
+    {
+     "month": 12,
+     "revenue": 1565400,
+     "variable": 462341,
+     "fixed": 446260,
+     "ebitda": 656799,
+     "machine_hours": 110,
+     "two_shifts": false,
+     "cash_balance": -13254157
+    },
+    {
+     "month": 13,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -12630566
+    },
+    {
+     "month": 14,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -11971550
+    },
+    {
+     "month": 15,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -11300485
+    },
+    {
+     "month": 16,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -10629419
+    },
+    {
+     "month": 17,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -9958353
+    },
+    {
+     "month": 18,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -9287287
+    },
+    {
+     "month": 19,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -8616222
+    },
+    {
+     "month": 20,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -7945156
+    },
+    {
+     "month": 21,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -7274090
+    },
+    {
+     "month": 22,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -6603024
+    },
+    {
+     "month": 23,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -5931959
+    },
+    {
+     "month": 24,
+     "revenue": 1589500,
+     "variable": 472174,
+     "fixed": 446260,
+     "ebitda": 671066,
+     "machine_hours": 113,
+     "two_shifts": false,
+     "cash_balance": -5260893
+    }
+   ]
+  },
+  "UPSIDE": {
+   "case": "UPSIDE",
+   "capex_dzd": 9991300,
+   "capex_usd": 75123,
+   "peak_operating_loss_dzd": 1569767,
+   "working_capital_dzd": 2118231,
+   "peak_cash_need_dzd": 12713059,
+   "peak_cash_need_usd": 95587,
+   "y1_revenue": 10361222,
+   "y1_ebitda": 3257715,
+   "y2_revenue": 29717544,
+   "y2_ebitda": 16162968,
+   "first_profitable_month": 7,
+   "m24_machine_hours": 169,
+   "monthly": [
+    {
+     "month": 1,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -780000
+    },
+    {
+     "month": 2,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -3094650
+    },
+    {
+     "month": 3,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -7323004
+    },
+    {
+     "month": 4,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 382630,
+     "ebitda": -382630,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -8628530
+    },
+    {
+     "month": 5,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 446260,
+     "ebitda": -446260,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -11547759
+    },
+    {
+     "month": 6,
+     "revenue": 298134,
+     "variable": 52751,
+     "fixed": 446260,
+     "ebitda": -200877,
+     "machine_hours": 8,
+     "two_shifts": false,
+     "cash_balance": -12590134
+    },
+    {
+     "month": 7,
+     "revenue": 599734,
+     "variable": 125599,
+     "fixed": 446260,
+     "ebitda": 27875,
+     "machine_hours": 26,
+     "two_shifts": false,
+     "cash_balance": -12713059
+    },
+    {
+     "month": 8,
+     "revenue": 915508,
+     "variable": 202407,
+     "fixed": 446260,
+     "ebitda": 266841,
+     "machine_hours": 45,
+     "two_shifts": false,
+     "cash_balance": -12604105
+    },
+    {
+     "month": 9,
+     "revenue": 1745978,
+     "variable": 451039,
+     "fixed": 446260,
+     "ebitda": 848678,
+     "machine_hours": 121,
+     "two_shifts": false,
+     "cash_balance": -12170661
+    },
+    {
+     "month": 10,
+     "revenue": 2036447,
+     "variable": 519671,
+     "fixed": 446260,
+     "ebitda": 1070515,
+     "machine_hours": 138,
+     "two_shifts": false,
+     "cash_balance": -11245380
+    },
+    {
+     "month": 11,
+     "revenue": 2326916,
+     "variable": 588304,
+     "fixed": 446260,
+     "ebitda": 1292353,
+     "machine_hours": 154,
+     "two_shifts": false,
+     "cash_balance": -10098262
+    },
+    {
+     "month": 12,
+     "revenue": 2438505,
+     "variable": 625285,
+     "fixed": 492000,
+     "ebitda": 1321220,
+     "machine_hours": 166,
+     "two_shifts": true,
+     "cash_balance": -8832837
+    },
+    {
+     "month": 13,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": -7504902
+    },
+    {
+     "month": 14,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": -6157989
+    },
+    {
+     "month": 15,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": -4811075
+    },
+    {
+     "month": 16,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": -3464161
+    },
+    {
+     "month": 17,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": -2117248
+    },
+    {
+     "month": 18,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": -770334
+    },
+    {
+     "month": 19,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": 576579
+    },
+    {
+     "month": 20,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": 1923493
+    },
+    {
+     "month": 21,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": 3270406
+    },
+    {
+     "month": 22,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": 4617320
+    },
+    {
+     "month": 23,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": 5964233
+    },
+    {
+     "month": 24,
+     "revenue": 2476462,
+     "variable": 637549,
+     "fixed": 492000,
+     "ebitda": 1346914,
+     "machine_hours": 169,
+     "two_shifts": true,
+     "cash_balance": 7311147
+    }
+   ]
+  },
+  "DOWNSIDE": {
+   "case": "DOWNSIDE",
+   "capex_dzd": 11587300,
+   "capex_usd": 87123,
+   "peak_operating_loss_dzd": 3075724,
+   "working_capital_dzd": 2607700,
+   "peak_cash_need_dzd": 17270718,
+   "peak_cash_need_usd": 129855,
+   "y1_revenue": 2802850,
+   "y1_ebitda": -2707168,
+   "y2_revenue": 8061600,
+   "y2_ebitda": -368556,
+   "first_profitable_month": null,
+   "m24_machine_hours": 56,
+   "monthly": [
+    {
+     "month": 1,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -780000
+    },
+    {
+     "month": 2,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -3094650
+    },
+    {
+     "month": 3,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -7697066
+    },
+    {
+     "month": 4,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 382630,
+     "ebitda": -382630,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -9827330
+    },
+    {
+     "month": 5,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 446260,
+     "ebitda": -446260,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -13619371
+    },
+    {
+     "month": 6,
+     "revenue": 75717,
+     "variable": 19957,
+     "fixed": 446260,
+     "ebitda": -390500,
+     "machine_hours": 3,
+     "two_shifts": false,
+     "cash_balance": -14984548
+    },
+    {
+     "month": 7,
+     "revenue": 152313,
+     "variable": 51420,
+     "fixed": 446260,
+     "ebitda": -345367,
+     "machine_hours": 9,
+     "two_shifts": false,
+     "cash_balance": -15406072
+    },
+    {
+     "month": 8,
+     "revenue": 232510,
+     "variable": 84705,
+     "fixed": 446260,
+     "ebitda": -298455,
+     "machine_hours": 15,
+     "two_shifts": false,
+     "cash_balance": -15820782
+    },
+    {
+     "month": 9,
+     "revenue": 486280,
+     "variable": 174143,
+     "fixed": 446260,
+     "ebitda": -134123,
+     "machine_hours": 40,
+     "two_shifts": false,
+     "cash_balance": -16160186
+    },
+    {
+     "month": 10,
+     "revenue": 560050,
+     "variable": 203581,
+     "fixed": 446260,
+     "ebitda": -89791,
+     "machine_hours": 46,
+     "two_shifts": false,
+     "cash_balance": -16453845
+    },
+    {
+     "month": 11,
+     "revenue": 633820,
+     "variable": 233019,
+     "fixed": 446260,
+     "ebitda": -45459,
+     "machine_hours": 51,
+     "two_shifts": false,
+     "cash_balance": -16699959
+    },
+    {
+     "month": 12,
+     "revenue": 662160,
+     "variable": 250483,
+     "fixed": 446260,
+     "ebitda": -34583,
+     "machine_hours": 55,
+     "two_shifts": false,
+     "cash_balance": -16822481
+    },
+    {
+     "month": 13,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -16909069
+    },
+    {
+     "month": 14,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -16958772
+    },
+    {
+     "month": 15,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -16994304
+    },
+    {
+     "month": 16,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17025017
+    },
+    {
+     "month": 17,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17055730
+    },
+    {
+     "month": 18,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17086442
+    },
+    {
+     "month": 19,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17117155
+    },
+    {
+     "month": 20,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17147868
+    },
+    {
+     "month": 21,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17178580
+    },
+    {
+     "month": 22,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17209293
+    },
+    {
+     "month": 23,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17240006
+    },
+    {
+     "month": 24,
+     "revenue": 671800,
+     "variable": 256253,
+     "fixed": 446260,
+     "ebitda": -30713,
+     "machine_hours": 56,
+     "two_shifts": false,
+     "cash_balance": -17270718
+    }
+   ]
+  },
+  "BASE_LEAN_TOOLING": {
+   "case": "BASE_LEAN_TOOLING",
+   "capex_dzd": 8927300,
+   "capex_usd": 67123,
+   "peak_operating_loss_dzd": 1848571,
+   "working_capital_dzd": 2789500,
+   "peak_cash_need_dzd": 12480590,
+   "peak_cash_need_usd": 93839,
+   "y1_revenue": 6647125,
+   "y1_ebitda": 148564,
+   "y2_revenue": 19074000,
+   "y2_ebitda": 7425444,
+   "first_profitable_month": 9,
+   "m24_machine_hours": 185,
+   "monthly": [
+    {
+     "month": 1,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -780000
+    },
+    {
+     "month": 2,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -3094650
+    },
+    {
+     "month": 3,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -7073629
+    },
+    {
+     "month": 4,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 382630,
+     "ebitda": -382630,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -8629330
+    },
+    {
+     "month": 5,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 446260,
+     "ebitda": -446260,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -10966684
+    },
+    {
+     "month": 6,
+     "revenue": 189292,
+     "variable": 39014,
+     "fixed": 446260,
+     "ebitda": -295983,
+     "machine_hours": 10,
+     "two_shifts": false,
+     "cash_balance": -11886819
+    },
+    {
+     "month": 7,
+     "revenue": 380783,
+     "variable": 96372,
+     "fixed": 446260,
+     "ebitda": -161848,
+     "machine_hours": 35,
+     "two_shifts": false,
+     "cash_balance": -12239059
+    },
+    {
+     "month": 8,
+     "revenue": 581275,
+     "variable": 156865,
+     "fixed": 446260,
+     "ebitda": -21850,
+     "machine_hours": 60,
+     "two_shifts": false,
+     "cash_balance": -12456900
+    },
+    {
+     "month": 9,
+     "revenue": 1125700,
+     "variable": 330672,
+     "fixed": 446260,
+     "ebitda": 348768,
+     "machine_hours": 122,
+     "two_shifts": false,
+     "cash_balance": -12480590
+    },
+    {
+     "month": 10,
+     "revenue": 1310125,
+     "variable": 384479,
+     "fixed": 446260,
+     "ebitda": 479386,
+     "machine_hours": 144,
+     "two_shifts": false,
+     "cash_balance": -12365629
+    },
+    {
+     "month": 11,
+     "revenue": 1494550,
+     "variable": 438285,
+     "fixed": 492000,
+     "ebitda": 564265,
+     "machine_hours": 165,
+     "two_shifts": true,
+     "cash_balance": -11985789
+    },
+    {
+     "month": 12,
+     "revenue": 1565400,
+     "variable": 468684,
+     "fixed": 492000,
+     "ebitda": 604716,
+     "machine_hours": 181,
+     "two_shifts": true,
+     "cash_balance": -11508710
+    },
+    {
+     "month": 13,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -10937398
+    },
+    {
+     "month": 14,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -10330661
+    },
+    {
+     "month": 15,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -9711873
+    },
+    {
+     "month": 16,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -9093086
+    },
+    {
+     "month": 17,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -8474299
+    },
+    {
+     "month": 18,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -7855512
+    },
+    {
+     "month": 19,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -7236725
+    },
+    {
+     "month": 20,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -6617937
+    },
+    {
+     "month": 21,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -5999150
+    },
+    {
+     "month": 22,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -5380363
+    },
+    {
+     "month": 23,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -4761576
+    },
+    {
+     "month": 24,
+     "revenue": 1589500,
+     "variable": 478713,
+     "fixed": 492000,
+     "ebitda": 618787,
+     "machine_hours": 185,
+     "two_shifts": true,
+     "cash_balance": -4142788
+    }
+   ]
+  },
+  "DOWNSIDE_LEAN_TOOLING": {
+   "case": "DOWNSIDE_LEAN_TOOLING",
+   "capex_dzd": 9459300,
+   "capex_usd": 71123,
+   "peak_operating_loss_dzd": 3127487,
+   "working_capital_dzd": 2607700,
+   "peak_cash_need_dzd": 15194486,
+   "peak_cash_need_usd": 114244,
+   "y1_revenue": 2802850,
+   "y1_ebitda": -2719703,
+   "y2_revenue": 8061600,
+   "y2_ebitda": -407784,
+   "first_profitable_month": null,
+   "m24_machine_hours": 93,
+   "monthly": [
+    {
+     "month": 1,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -780000
+    },
+    {
+     "month": 2,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -3094650
+    },
+    {
+     "month": 3,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 180000,
+     "ebitda": -180000,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -7198316
+    },
+    {
+     "month": 4,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 382630,
+     "ebitda": -382630,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -9188930
+    },
+    {
+     "month": 5,
+     "revenue": 0,
+     "variable": 0,
+     "fixed": 446260,
+     "ebitda": -446260,
+     "machine_hours": 0,
+     "two_shifts": false,
+     "cash_balance": -11817221
+    },
+    {
+     "month": 6,
+     "revenue": 75717,
+     "variable": 20189,
+     "fixed": 446260,
+     "ebitda": -390733,
+     "machine_hours": 5,
+     "two_shifts": false,
+     "cash_balance": -12856781
+    },
+    {
+     "month": 7,
+     "revenue": 152313,
+     "variable": 52214,
+     "fixed": 446260,
+     "ebitda": -346160,
+     "machine_hours": 18,
+     "two_shifts": false,
+     "cash_balance": -13279098
+    },
+    {
+     "month": 8,
+     "revenue": 232510,
+     "variable": 86054,
+     "fixed": 446260,
+     "ebitda": -299804,
+     "machine_hours": 30,
+     "two_shifts": false,
+     "cash_balance": -13695157
+    },
+    {
+     "month": 9,
+     "revenue": 486280,
+     "variable": 175982,
+     "fixed": 446260,
+     "ebitda": -135962,
+     "machine_hours": 61,
+     "two_shifts": false,
+     "cash_balance": -14036401
+    },
+    {
+     "month": 10,
+     "revenue": 560050,
+     "variable": 205911,
+     "fixed": 446260,
+     "ebitda": -92121,
+     "machine_hours": 72,
+     "two_shifts": false,
+     "cash_balance": -14332390
+    },
+    {
+     "month": 11,
+     "revenue": 633820,
+     "variable": 235839,
+     "fixed": 446260,
+     "ebitda": -48279,
+     "machine_hours": 83,
+     "two_shifts": false,
+     "cash_balance": -14581324
+    },
+    {
+     "month": 12,
+     "revenue": 662160,
+     "variable": 253654,
+     "fixed": 446260,
+     "ebitda": -37754,
+     "machine_hours": 90,
+     "two_shifts": false,
+     "cash_balance": -14707018
+    },
+    {
+     "month": 13,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -14796875
+    },
+    {
+     "month": 14,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -14849847
+    },
+    {
+     "month": 15,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -14888649
+    },
+    {
+     "month": 16,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -14922631
+    },
+    {
+     "month": 17,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -14956613
+    },
+    {
+     "month": 18,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -14990595
+    },
+    {
+     "month": 19,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -15024576
+    },
+    {
+     "month": 20,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -15058558
+    },
+    {
+     "month": 21,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -15092540
+    },
+    {
+     "month": 22,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -15126522
+    },
+    {
+     "month": 23,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -15160504
+    },
+    {
+     "month": 24,
+     "revenue": 671800,
+     "variable": 259522,
+     "fixed": 446260,
+     "ebitda": -33982,
+     "machine_hours": 93,
+     "two_shifts": false,
+     "cash_balance": -15194486
+    }
+   ]
+  }
+ },
+ "scale": [
+  {
+   "machines": 1,
+   "utilisation": 0.35,
+   "productive_hours": 1680,
+   "molds_needed": 15,
+   "molds_note": "8-12 molds",
+   "revenue_capacity_dzd": 32455901,
+   "revenue_capacity_usd": 244029,
+   "capex_usd": 147500,
+   "staff": 3,
+   "area_m2": 250,
+   "power_kva": 70
+  },
+  {
+   "machines": 3,
+   "utilisation": 0.55,
+   "productive_hours": 7920,
+   "molds_needed": 70,
+   "molds_note": "25-35 molds",
+   "revenue_capacity_dzd": 153006389,
+   "revenue_capacity_usd": 1150424,
+   "capex_usd": 635000,
+   "staff": 10,
+   "area_m2": 700,
+   "power_kva": 200
+  },
+  {
+   "machines": 5,
+   "utilisation": 0.6,
+   "productive_hours": 14400,
+   "molds_needed": 128,
+   "molds_note": "40-60 molds",
+   "revenue_capacity_dzd": 278193434,
+   "revenue_capacity_usd": 2091680,
+   "capex_usd": 751360,
+   "staff": 18,
+   "area_m2": 1200,
+   "power_kva": 330
+  },
+  {
+   "machines": 10,
+   "utilisation": 0.65,
+   "productive_hours": 31200,
+   "molds_needed": 277,
+   "molds_note": "80-120 molds",
+   "revenue_capacity_dzd": 602752440,
+   "revenue_capacity_usd": 4531973,
+   "capex_usd": 1599740,
+   "staff": 35,
+   "area_m2": 2500,
+   "power_kva": 650
+  },
+  {
+   "machines": 20,
+   "utilisation": 0.7,
+   "productive_hours": 67200,
+   "molds_needed": 596,
+   "molds_note": "150-250 molds",
+   "revenue_capacity_dzd": 1298236025,
+   "revenue_capacity_usd": 9761173,
+   "capex_usd": 3393520,
+   "staff": 70,
+   "area_m2": 5000,
+   "power_kva": 1300
+  }
+ ],
+ "rev_per_hour": 19318.9884649512,
+ "hours_per_mold": 112.7
+}
