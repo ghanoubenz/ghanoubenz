@@ -1,0 +1,6 @@
+Idea                                         Capex    Y1 Rev     Y1 GP     Fixed  Y1 EBITDA  Cash need
+I3 Compressed-air leak-to-savings           85,203   396,500   246,400   150,000     96,400    259,328
+I4 Legacy automation continuity            143,000   537,500   260,625   276,000    -15,375    415,375
+I1 Critical-wear parts (scan-to-part)      115,000   477,000   325,950   192,000    133,950    330,250
+J1 Cold-room reliability bundle             78,000   646,400   324,640   168,000    156,640    323,600
+I2 Reliability route + sensors             130,000   439,800   280,020   228,000     52,020    353,950
