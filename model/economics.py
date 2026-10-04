@@ -79,13 +79,57 @@ def main():
         r["founder_entry"] = round(st.mean(f(r[k]) for k in FE) * 10, 1)
         ev = f(r.get("evidence_strength", 0))           # 0 none .. 3 verified pain + price
         r["combined"] = round(0.45 * r["market_attractiveness"] + 0.45 * r["founder_entry"] + 10 * ev / 3, 1)
-    inj = [r for r in rows if r["machine_fit"] in ("Fits 120T confidently", "Borderline 120T") and r.get("hard_kill", "").strip() == ""]
+    def alive(r):
+        v = r.get("researcher_verdict", "").upper()
+        return (r["machine_fit"] in ("Fits 120T confidently", "Borderline 120T") and r.get("hard_kill", "").strip() == ""
+                and not v.startswith("KILL") and "FUTURE" not in v and f(r["min_press_t"], 999) <= 160)
+    inj = [r for r in rows if alive(r)]
     inj.sort(key=lambda r: -r["combined"])
     top50 = {r["product_id"] for r in inj[:50]}
-    top20 = {r["product_id"] for r in inj[:20]}
+    def econ_row(r):
+        price = f(r["price_dzd"])
+        row = dict(product_id=r["product_id"], product=r["product"], family=r["family"], price_dzd=price,
+                   price_basis=r["price_basis"], annual_volume_pcs=f(r["annual_volume_pcs"]))
+        for resin in RESIN_CASES:
+            for util in UTIL_CASES:
+                c = unit_cost(r, resin, util, 60, price)
+                row[f"margin_r{resin}_u{int(util*100)}"] = round((price - c["total"]) / price * 100, 1)
+        for cd in CREDIT_CASES:
+            c = unit_cost(r, 300, 0.7, cd, price)
+            row[f"margin_r300_u70_credit{cd}"] = round((price - c["total"]) / price * 100, 1)
+        r2 = dict(r); r2["annual_volume_pcs"] = str(2 * f(r["annual_volume_pcs"]))
+        c2 = unit_cost(r2, 300, 0.7, 60, price)
+        row["margin_r300_u70_volume_x2"] = round((price - c2["total"]) / price * 100, 1)
+        b0 = unit_cost(r, 300, 0.7, 60, price)
+        mold_total = f(r["mold_cost_usd"], 6000) * MOLD_LANDED_FACTOR * FX / MOLD_LIFE_YEARS
+        ume = price - (b0["total"] - b0["mold"])
+        row["breakeven_volume_pcs_per_year"] = round(mold_total / ume) if ume > 0 else "never"
+        row.update(unit_cost_base=round(b0["total"], 2), material=round(b0["material"], 2),
+                   conversion=round(b0["conversion"], 2), mold=round(b0["mold"], 2),
+                   parts_per_hour=round(b0["pph"]), machine_hours_per_year=round(f(r["annual_volume_pcs"]) / b0["pph"]),
+                   annual_revenue_dzd=round(price * f(r["annual_volume_pcs"])),
+                   annual_contribution_dzd=round((price - b0["total"]) * f(r["annual_volume_pcs"])))
+        m = row["margin_r400_u50"]
+        row["economics_verdict"] = "KILL (collapses under stress)" if m < 0 else "FRAGILE" if m < 15 else "ROBUST"
+        row["min_press_t"] = r["min_press_t"]; row["combined"] = r["combined"]; row["evidence_strength"] = r["evidence_strength"]
+        return row
+    ECON = {}
+    top20 = []
+    for r in inj:
+        if f(r["price_dzd"]) <= 0: continue
+        e = econ_row(r); ECON[r["product_id"]] = e
+        if e["economics_verdict"].startswith("KILL"):
+            r["kill_reason"] = f"Economics collapse: margin {e['margin_r400_u50']}% at resin 400 / 50% use (base {e['margin_r300_u70']}%)"
+            continue
+        top20.append(r["product_id"])
+        if len(top20) == 20: break
+    top20 = set(top20)
     for r in rows:
         if r["product_id"] in top20: r["stage"] = "TOP20"
-        elif r["product_id"] in top50: r["stage"] = "TOP50"
+        elif r.get("kill_reason", "").startswith("Economics collapse"): r["stage"] = "KILLED"
+        elif r["product_id"] in top50:
+            r["stage"] = "TOP50"
+            if f(r["price_dzd"]) <= 0: r["kill_reason"] = "Held at top-50: no DZD price yet, cannot run economics"
         else:
             r["stage"] = "KILLED"
             if not r.get("kill_reason"):
@@ -93,36 +137,19 @@ def main():
                     r["kill_reason"] = "Future-machine opportunity: " + r["machine_fit"]
                 elif r.get("hard_kill"):
                     r["kill_reason"] = r["hard_kill"]
+                elif r.get("researcher_verdict", "").upper().startswith("KILL"):
+                    r["kill_reason"] = "Killed by sector researcher (see stage notes)"
                 else:
                     r["kill_reason"] = f"Below top-50 cut-off on combined score ({r['combined']})"
     keys = list(rows[0].keys())
     with open(D("data", "funnel_scores.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=keys); w.writeheader(); w.writerows(sorted(rows, key=lambda r: -r["combined"]))
 
-    # ---- economics for top 20 ----
-    econ = []
-    for r in sorted([r for r in rows if r["stage"] == "TOP20"], key=lambda r: -r["combined"]):
-        price = f(r["price_dzd"])
-        row = dict(product_id=r["product_id"], product=r["product"], price_dzd=price, price_basis=r["price_basis"],
-                   annual_volume_pcs=f(r["annual_volume_pcs"]))
-        for resin in RESIN_CASES:
-            for util in UTIL_CASES:
-                c = unit_cost(r, resin, util, 60, price)
-                row[f"margin_r{resin}_u{int(util*100)}"] = round((price - c["total"]) / price * 100, 1) if price else None
-        for cd in CREDIT_CASES:
-            c = unit_cost(r, 300, 0.7, cd, price)
-            row[f"margin_r300_u70_credit{cd}"] = round((price - c["total"]) / price * 100, 1) if price else None
-        base = unit_cost(r, 300, 0.7, 60, price)
-        row.update(unit_cost_base=round(base["total"], 2), material=round(base["material"], 2),
-                   conversion=round(base["conversion"], 2), mold=round(base["mold"], 2),
-                   parts_per_hour=round(base["pph"]), machine_hours_per_year=round(f(r["annual_volume_pcs"]) / base["pph"]),
-                   annual_revenue_dzd=round(price * f(r["annual_volume_pcs"])),
-                   annual_contribution_dzd=round((price - base["total"]) * f(r["annual_volume_pcs"])))
-        m_stress = row["margin_r400_u50"]
-        row["economics_verdict"] = ("KILL (collapses under stress)" if m_stress is not None and m_stress < 0
-                                    else "FRAGILE" if m_stress is not None and m_stress < 15 else "ROBUST")
-        row["min_press_t"] = r["min_press_t"]
-        econ.append(row)
+    econ = sorted([ECON[i] for i in top20], key=lambda e: -e["combined"])
+    killed_econ = [e for e in ECON.values() if e["economics_verdict"].startswith("KILL")]
+    with open(D("data", "economics_killed.csv"), "w", newline="") as fh:
+        if killed_econ:
+            w = csv.DictWriter(fh, fieldnames=list(killed_econ[0].keys())); w.writeheader(); w.writerows(killed_econ)
     with open(D("data", "top20_economics.csv"), "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(econ[0].keys())); w.writeheader(); w.writerows(econ)
 
