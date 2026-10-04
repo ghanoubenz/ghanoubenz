@@ -105,6 +105,17 @@ Ask about the last real incident. Do not pitch until the end.
 - **Pivot to J1** if plant buyers are unreachable or too slow but cold-room pilots convert.
 - **KILL / rethink** if fewer than 3 of 10 plants report parts-driven downtime and nobody pays for P1–P3.
 
+## Falsification tests from the Phase 5 simulation (check each one explicitly)
+
+The Phase 5 simulation is SIMULATED OUTCOME. These observations would prove it wrong:
+1. **P1 conversion is outside the expected range.** Either 0 of 5 plants sign even when repairs are included, or 4–5 of 5 sign at the full AED 3.5k without needing a credit.
+2. **Compressor OEM dealers already run independent repair + re-survey programmes**, or plants tell you "we already have that".
+3. **Fewer than 3 of 10 walked plants** name 3 or more parts with OEM lead time over 3 weeks or cost over AED 2k.
+4. **Hotels with AMCs pay for guaranteed response** at a rate equal to or higher than central kitchens.
+5. **Kelsius or FM firms already sell a priced "monitoring + response + gasket" bundle** in 2026.
+
+**The single most important metric is cross-sell:** the share of I3 plants that also ask for I1 parts or an I4 audit within the 6 weeks. If it is ≥30%, "Line Continuity" is a company. If it is below 25%, I3 on its own is a low-moat leak-fixing business, and you should pivot as described in the kill/go criteria above.
+
 ## Data to capture per interaction (for the tracker)
 - company, segment, size, decision-maker
 - last downtime incident: cause, duration, part
