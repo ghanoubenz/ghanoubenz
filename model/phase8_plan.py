@@ -14,7 +14,7 @@ LAUNCH = [  # id, launch month (production), mold funded by: 'us' or 'customer',
     ("IF-01", 6, "us", "China"),        # drip start connector
     ("IF-08", 6, "us", "Algeria/China"),# drip end plug
     ("JC-30", 6, "us", "Algeria"),      # formwork cone
-    ("JC-24", 7, "us", "Algeria"),      # rebar spacer wheel (hours filler)
+    ("OS-002", 7, "us", "Algeria/China"),# IRL conduit coupler (spacers demoted to filler after Phase 6)
     ("CL-002", 8, "customer", "China"), # 28/410 flip-top, only if shampoo-maker case confirms
 ]
 FILLER_MONTH = 9
