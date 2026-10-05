@@ -1,0 +1,4268 @@
+<title>Line Continuity Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* Layout: sticky contents rail on the left, one reading column (~70ch) on the right; stacks on phones. */
+:root{
+  --bg:#f3f4f1; --surface:#ffffff; --ink:#1b2321; --muted:#5b6662; --line:#d9ddd8;
+  --accent:#0f6b63; --accent-soft:#e1efec; --amber:#b57a00; --amber-soft:#f8eed6; --warn:#a2401f; --warn-soft:#f6e3db;
+  --display:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121816; --surface:#1a2220; --ink:#e4eae7; --muted:#9aa7a2; --line:#2c3633;
+  --accent:#4fbfb2; --accent-soft:#183531; --amber:#e3ad3c; --amber-soft:#2f2715; --warn:#ec8d68; --warn-soft:#35211a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121816; --surface:#1a2220; --ink:#e4eae7; --muted:#9aa7a2; --line:#2c3633;
+  --accent:#4fbfb2; --accent-soft:#183531; --amber:#e3ad3c; --amber-soft:#2f2715; --warn:#ec8d68; --warn-soft:#35211a; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--body)}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding-inline:24px;padding-block:32px 80px}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-right:8px;font-size:14px}
+.navgroup{display:flex;flex-direction:column;gap:2px;margin-bottom:18px}
+.navlabel{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+nav.rail a{color:var(--ink);text-decoration:none;padding:5px 10px;border-radius:6px;border-left:2px solid transparent}
+nav.rail a:hover,nav.rail a:focus-visible{background:var(--accent-soft);border-left-color:var(--accent);outline:none}
+main{min-width:0;max-width:78ch}
+.hero{padding-block:8px 28px;border-bottom:1px solid var(--line)}
+.kicker{font:500 12px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+h1{font:700 clamp(44px,8vw,76px)/.95 var(--display);letter-spacing:-.01em;margin:0 0 16px;text-wrap:balance}
+.lede{font-size:19px;line-height:1.55;margin:0 0 24px;max-width:62ch}
+.funnel{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.funnel div{display:flex;flex-direction:column;align-items:center;min-width:76px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.funnel b{font:700 28px/1 var(--display);font-variant-numeric:tabular-nums}
+.funnel span{font:500 11px/1.4 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.funnel i{color:var(--muted);font-style:normal}
+.funnel .win{background:var(--accent);border-color:var(--accent)}
+.funnel .win b,.funnel .win span{color:var(--bg)}
+.board{padding-block:32px;border-bottom:1px solid var(--line)}
+.boardh{font:700 26px/1.15 var(--display);margin:0 0 16px;text-wrap:balance}
+.stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card h3{font:700 21px/1.2 var(--display);margin:0}
+.card p{margin:0;font-size:15px}
+.role{font:600 11px/1 var(--mono)!important;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.meta{margin-top:auto!important;font:500 13px/1.4 var(--mono)!important;color:var(--muted);padding-top:8px;border-top:1px dashed var(--line)}
+.callouts{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-top:14px}
+.callout{border-radius:10px;padding:18px;min-width:0}
+.callout p{margin:0 0 8px;font-size:15px}
+.callout .cl{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.callout a{color:var(--accent);font-weight:600;text-underline-offset:2px}
+.callout.key{background:var(--accent-soft)} .callout.key .cl{color:var(--accent)}
+.callout.alt{background:var(--amber-soft)} .callout.alt .cl{color:var(--amber)}
+.note{color:var(--muted);font-size:14px;margin:0 0 16px}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(0,18rem) minmax(0,1fr) 3.2rem;align-items:center;gap:12px;font-size:14px}
+.bl{overflow-wrap:anywhere}
+.bt{height:12px;background:var(--line);border-radius:3px;overflow:hidden}
+.bf{display:block;height:100%;background:var(--muted)}
+.bar.in .bf{background:var(--accent)} .bar.in .bl{font-weight:600}
+.bv{font:500 13px var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.axis{display:grid;grid-template-columns:minmax(0,18rem) minmax(0,1fr) 3.2rem;gap:12px;font:11px var(--mono);color:var(--muted);margin-top:6px}
+.axis span:nth-child(1){grid-column:2;justify-self:start}
+.axis span:nth-child(2){grid-column:2;justify-self:center;grid-row:1}
+.axis span:nth-child(3){grid-column:2;justify-self:end;grid-row:1}
+.board.warn ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.part{padding-block:44px 8px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+.part > h2{font:700 34px/1.1 var(--display);margin:0 0 18px;text-wrap:balance}
+.eyebrow{font:600 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+.part h3.h{font:700 23px/1.2 var(--display);margin:32px 0 10px;text-wrap:balance}
+.part h3{font:700 20px/1.25 var(--display);margin:26px 0 8px}
+.part h4{font:600 16px/1.3 var(--body);margin:22px 0 6px}
+.part p,.part li{max-width:70ch}
+.part ul,.part ol{padding-left:1.25em}
+.part li{margin:3px 0}
+.part li > ul,.part li > ol{margin:4px 0}
+.part a{color:var(--accent);text-underline-offset:2px;overflow-wrap:anywhere}
+.part code{font:13px var(--mono);background:var(--accent-soft);padding:1px 5px;border-radius:4px;overflow-wrap:anywhere}
+.part pre{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px}
+.part pre code{background:none;padding:0}
+.part blockquote{margin:18px 0;padding:14px 18px;background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:0 8px 8px 0}
+.part blockquote p{margin:6px 0}
+.part hr{border:0;border-top:1px dashed var(--line);margin:28px 0}
+.tbl{overflow-x:auto;margin:14px 0 18px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.tbl table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.5}
+.tbl th{text-align:left;font:600 12px/1.3 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--bg);padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:bottom}
+.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;min-width:8ch;font-variant-numeric:tabular-nums}
+.tbl tr:last-child td{border-bottom:0}
+.tag{display:inline-block;font:600 11px/1.6 var(--mono);letter-spacing:.06em;padding:0 6px;border-radius:4px;white-space:nowrap}
+.tag.sim{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.tag.legal{background:var(--amber-soft);color:var(--amber)}
+.top{margin-top:24px;font:500 13px var(--mono)}
+.top a{color:var(--muted)}
+.mtoc{display:none}
+@media (max-width:900px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:16px;padding-block:16px 60px}
+  nav.rail{display:none}
+  .mtoc{display:block;margin:18px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+  .mtoc summary{cursor:pointer;font:600 13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+  .mtoc .navgroup{margin-top:12px} .mtoc a{color:var(--ink);text-decoration:none;padding:4px 0;display:block}
+  .stack,.callouts{grid-template-columns:minmax(0,1fr)}
+  .bar,.axis{grid-template-columns:minmax(0,9rem) minmax(0,1fr) 2.8rem;gap:8px}
+  .lede{font-size:17px}
+}
+</style>
+<div class="wrap">
+  <nav class="rail" aria-label="Contents"><div class="navgroup"><p class="navlabel">Overview</p><a href="#summary">Summary</a></div><div class="navgroup"><p class="navlabel">Phases</p><a href="#phase0">Phase 0 · Tool setup</a><a href="#phase1">Phase 1 · UAE pain map</a><a href="#phase2">Phase 2 · Global analogues</a><a href="#phase3">Phase 3 · UAE competition &amp; demand</a><a href="#phase4">Phase 4 · Technical feasibility</a><a href="#phase5">Phase 5 · Simulation</a><a href="#phase6">Phase 6 · Field validation</a></div><div class="navgroup"><p class="navlabel">Evidence</p><a href="#e1">E1 · Practitioner pain</a><a href="#e2">E2 · UAE supply side</a><a href="#e3">E3 · UAE demand &amp; policy</a><a href="#e4">E4 · Analogues: reliability &amp; energy</a><a href="#e5">E5 · Analogues: parts &amp; manufacturing</a><a href="#e6">E6 · UAE deep dive: commercial</a><a href="#e7">E7 · UAE deep dive: industrial</a></div><div class="navgroup"><p class="navlabel">Appendix</p><a href="#appendix">All 182 hypotheses</a></div></nav>
+  <main>
+    
+<header class="hero" id="top">
+  <p class="kicker">UAE engineering &amp; industrial opportunity study · October 2026</p>
+  <h1>Line Continuity</h1>
+  <p class="lede">A small Sharjah/Dubai engineering-services company for the UAE's SME plants (food &amp; beverage, bottling, packaging, plastics). It sells one promise to the maintenance manager: <strong>when your line stops, we get it running, and we stop it from stopping again.</strong></p>
+  <div class="funnel" aria-label="Screening funnel">
+    <div><b>182</b><span>hypotheses</span></div><i aria-hidden="true">→</i>
+    <div><b>20</b><span>preliminary</span></div><i aria-hidden="true">→</i>
+    <div><b>10</b><span>deep-dived</span></div><i aria-hidden="true">→</i>
+    <div><b>5</b><span>feasibility</span></div><i aria-hidden="true">→</i>
+    <div class="win"><b>1</b><span>company</span></div>
+  </div>
+</header>
+
+<section class="board" aria-label="Recommended business">
+  <h2 class="boardh">The recommended business</h2>
+  <div class="stack">
+    <article class="card"><p class="role">Way in</p><h3>Compressed-air leak-to-savings</h3><p>Acoustic survey, we fix the leaks, quarterly re-survey, savings verified in AED. Camera sold locally for AED 20,475. No independent UAE provider found.</p><p class="meta">~AED 12k / plant / year</p></article>
+    <article class="card"><p class="role">Margin &amp; moat</p><h3>Critical-wear parts</h3><p>Line triage → scan → CAD → print, machine or cast in 48–72 h → a small per-plant digital parts vault. Food-safe igus materials for food-zone parts.</p><p class="meta">AED 1–3.5k per part · vault AED 500–1,500 / month</p></article>
+    <article class="card"><p class="role">Margin &amp; moat</p><h3>Legacy automation continuity</h3><p>Obsolescence audits, drop-in HMI/PLC migration kits, repair-exchange, bilingual part-number pages with WhatsApp quoting. Start asset-light.</p><p class="meta">Audit AED 3–7.5k · kits AED 15–50k</p></article>
+    <article class="card"><p class="role">Recurring add-on</p><h3>Reliability routes + sensors</h3><p>Vibration, thermal and ultrasound rounds sold on the same visit to the same manager. Weak alone, useful as a bolt-on.</p><p class="meta">AED 2–4k / site / month</p></article>
+  </div>
+  <div class="callouts">
+    <div class="callout key"><p class="cl">The number that decides it</p><p>How many leak-programme plants also buy parts or automation work. <strong>30% or more:</strong> a real company. <strong>Under 25%:</strong> a leak-fixing business anyone can copy. The 6-week field test measures this for about <strong>AED 25–35k</strong>.</p><p><a href="#phase6">Go to the field plan</a></p></div>
+    <div class="callout alt"><p class="cl">Alternative path</p><p><strong>Cold-room reliability bundle</strong> for hotels, central kitchens and food chains. Best standalone economics (breaks even at 52% of base case) but service-heavy, copyable within 6–12 months, and a different buyer.</p></div>
+  </div>
+</section>
+
+<section class="board" aria-label="Scores">
+  <h2 class="boardh">Overall test priority (0–10)</h2>
+  <p class="note">Weighted from 29 criteria: 30% market, 20% technical, 30% founder entry, 20% UAE fit. The top five went to feasibility. Gaps under about 0.4 are noise.</p>
+  <div class="bars"><div class="bar in"><span class="bl">I1 Critical-wear parts</span><span class="bt"><span class="bf" style="width:70.0%"></span></span><span class="bv">7.00</span></div><div class="bar in"><span class="bl">I4 Legacy automation continuity</span><span class="bt"><span class="bf" style="width:66.8%"></span></span><span class="bv">6.68</span></div><div class="bar in"><span class="bl">J1 Cold-room reliability bundle</span><span class="bt"><span class="bf" style="width:66.0%"></span></span><span class="bv">6.60</span></div><div class="bar in"><span class="bl">I3 Compressed-air leak-to-savings</span><span class="bt"><span class="bf" style="width:63.9%"></span></span><span class="bv">6.39</span></div><div class="bar in"><span class="bl">I2 Reliability route + sensors</span><span class="bt"><span class="bf" style="width:59.7%"></span></span><span class="bv">5.97</span></div><div class="bar"><span class="bl">I5 Enclosure climate hardening</span><span class="bt"><span class="bf" style="width:59.1%"></span></span><span class="bv">5.91</span></div><div class="bar"><span class="bl">J2 Leak pinpoint + shutoff</span><span class="bt"><span class="bf" style="width:57.1%"></span></span><span class="bv">5.71</span></div><div class="bar"><span class="bl">J5 Hotel FCU EC conversion</span><span class="bt"><span class="bf" style="width:53.2%"></span></span><span class="bv">5.32</span></div><div class="bar"><span class="bl">J4 Filtration-as-a-service</span><span class="bt"><span class="bf" style="width:51.8%"></span></span><span class="bv">5.18</span></div><div class="bar"><span class="bl">J3 Pulsed laser cleaning</span><span class="bt"><span class="bf" style="width:48.2%"></span></span><span class="bv">4.82</span></div></div>
+  <div class="axis" aria-hidden="true"><span>0</span><span>5</span><span>10</span></div>
+</section>
+
+<section class="board warn" aria-label="Limitations">
+  <h2 class="boardh">Read this before trusting the numbers</h2>
+  <ul>
+    <li>Agent Reach's sources (Reddit, Google, YouTube, LinkedIn, UAE news) were blocked by the environment's network policy. Research used about 400 web searches that return summaries only.</li>
+    <li>No Reddit thread was read. UAE factory-floor voice and UAE prices in AED are the biggest gaps; the field plan is built to fill them.</li>
+    <li>MiroFish was installed but could not run. Phase 5 is a substitute persona simulation, marked <span class="tag sim">SIMULATED OUTCOME</span>.</li>
+  </ul>
+</section>
+
+    <details class="mtoc"><summary>Contents</summary><div class="navgroup"><p class="navlabel">Overview</p><a href="#summary">Summary</a></div><div class="navgroup"><p class="navlabel">Phases</p><a href="#phase0">Phase 0 · Tool setup</a><a href="#phase1">Phase 1 · UAE pain map</a><a href="#phase2">Phase 2 · Global analogues</a><a href="#phase3">Phase 3 · UAE competition &amp; demand</a><a href="#phase4">Phase 4 · Technical feasibility</a><a href="#phase5">Phase 5 · Simulation</a><a href="#phase6">Phase 6 · Field validation</a></div><div class="navgroup"><p class="navlabel">Evidence</p><a href="#e1">E1 · Practitioner pain</a><a href="#e2">E2 · UAE supply side</a><a href="#e3">E3 · UAE demand &amp; policy</a><a href="#e4">E4 · Analogues: reliability &amp; energy</a><a href="#e5">E5 · Analogues: parts &amp; manufacturing</a><a href="#e6">E6 · UAE deep dive: commercial</a><a href="#e7">E7 · UAE deep dive: industrial</a></div><div class="navgroup"><p class="navlabel">Appendix</p><a href="#appendix">All 182 hypotheses</a></div></details>
+    <section id="summary" class="part"><p class="eyebrow">Overview</p><h2>Summary</h2><p>October 2026. This is a separate project from the earlier "boring businesses" research.</p>
+<h3 class="h">Bottom line</h3>
+<p><strong>The best opportunity found is "Line Continuity".</strong> It is a small Sharjah/Dubai engineering-services company for the UAE's roughly 33,000 mostly-SME industrial plants, starting with food &amp; beverage, bottling, packaging and plastics. It solves the one fear every maintenance manager shares: <em>"the line stops and we can't get it running fast enough."</em></p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Offer</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Wedge</strong> (gets you into the plant)</td>
+<td><strong>I3 Compressed-air leak-to-savings programme.</strong> Acoustic survey, we fix the leaks, re-survey every quarter, AED-verified savings</td>
+<td>Kit is available locally (Hikmicro AI56, AED 20.5k). Payback is weeks. No independent UAE provider was found. OEM audits give the survey away to sell compressors, so revenue must come from repairs and the programme</td>
+</tr>
+<tr>
+<td><strong>Margin + moat</strong></td>
+<td><strong>I1 Critical-wear parts.</strong> Paid line triage → scan → CAD → print, machine or cast in 48–72 h → curated per-plant digital vault. Food-zone parts use FDA/EU 10/2011 igus iglidur A350/I151</td>
+<td>12–19 week OEM lead times. The 2026 Hormuz disruption pushed UAE shipping costs up 300–500%. ADNOC and RTA have proved the model. Immensa serves oil &amp; gas but nobody serves SMEs. Capex has collapsed to about AED 15–90k</td>
+</tr>
+<tr>
+<td><strong>Margin + moat</strong></td>
+<td><strong>I4 Legacy automation continuity.</strong> Obsolescence audit, drop-in HMI/PLC migration kits, repair-exchange, bilingual part-number SEO + WhatsApp quoting</td>
+<td>Strong practitioner pain: PLCs replaced because spares are unavailable, HMI repair quoted at $250–5.5k. UAE repair labs are opaque. Founder's document-AI, SEO and marketing skills are a real advantage. Start asset-light: broker repairs, contract engineer</td>
+</tr>
+<tr>
+<td><strong>Recurring add-on</strong></td>
+<td><strong>I2 Reliability routes + approved wireless sensors</strong></td>
+<td>Weak on its own (Vibrant and RMT/Sensoteq are incumbents), but sold on the same visit to the same buyer</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Capability ladder:</strong> survey kit → scanner and printer → vacuum casting and soft tooling → low-volume moulding (ICV, tier-2 to ADNOC Local+ manufacturers) → regional GCC service hub. This is how "injection moulding" eventually becomes justified. <strong>Do not start with a moulding factory.</strong></p>
+<p><strong>Alternative path:</strong> <strong>J1 cold-room reliability bundle</strong> for hotels, central kitchens and food chains. It has the best standalone economics (breaks even at 52% of the base case) and the fastest revenue. But it is service-operations heavy, likely to be copied within 6–12 months, and serves a different buyer.</p>
+<p><strong>Biggest uncertainty:</strong> the cross-sell from I3 into I1 and I4. If at least 30% of plants buy parts or automation work, this is a company. If fewer than 25% do, it is a low-moat leak-fixing business. The <strong>6-week field validation (Phase 6)</strong> is designed to measure exactly this for about <strong>AED 25–35k</strong>.</p>
+<h3 class="h">Read in this order</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it contains</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#phase0">Phase 0 · Tool setup</a></td>
+<td>Phase 0: Agent Reach and MiroFish install, diagnostics, what is blocked and why</td>
+</tr>
+<tr>
+<td><a href="#phase1">Phase 1 · UAE pain map</a></td>
+<td>Phase 1: UAE technical pain map, 20 preliminary opportunities, what was killed</td>
+</tr>
+<tr>
+<td><a href="#appendix">All 182 hypotheses</a></td>
+<td>All 182 hypotheses, clustered, with kill reasons</td>
+</tr>
+<tr>
+<td><a href="#phase2">Phase 2 · Global analogues</a></td>
+<td>Phase 2: what other countries figured out; improved ideas; capability ladders</td>
+</tr>
+<tr>
+<td><a href="#phase3">Phase 3 · UAE competition &amp; demand</a></td>
+<td>Phase 3: UAE competitors and demand; 29-criterion scoring; 10 → 5</td>
+</tr>
+<tr>
+<td><a href="#phase4">Phase 4 · Technical feasibility</a></td>
+<td>Phase 4: equipment, people, capex, unit economics, the 17-field profiles for the top 5</td>
+</tr>
+<tr>
+<td><a href="#phase5">Phase 5 · Simulation</a></td>
+<td>Phase 5: <strong><span class="tag sim">SIMULATED OUTCOME</span></strong> persona simulation (MiroFish could not run)</td>
+</tr>
+<tr>
+<td><a href="#phase6">Phase 6 · Field validation</a></td>
+<td>Phase 6: who to call, where to go, questions, samples, pilots, kill/go criteria</td>
+</tr>
+<tr>
+<td><a href="#e1">the evidence sections</a></td>
+<td>Source evidence with URLs and confidence labels</td>
+</tr>
+<tr>
+<td><code>scoring/</code></td>
+<td>Re-runnable scoring and unit-economics models</td>
+</tr>
+<tr>
+<td><code>mirofish/</code></td>
+<td>Seed document, simulation requirements and an API runner for the real MiroFish run</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">Honest limitations (please read)</h3>
+<ol>
+<li>
+<p><strong>Agent Reach could not reach its sources.</strong> The container's network policy blocked Reddit, Jina, Exa, YouTube, Google, LinkedIn, X and the UAE news and government sites. Research ran on about 400 web searches that return <strong>result summaries only</strong>. No page was opened in full.</p>
+</li>
+<li>
+<p><strong>Reddit was not read at all.</strong> Practitioner voice comes from summaries of specialist forums: plctalk, Practical Machinist, eng-tips, hvac-talk, diysolarforum and expat forums. <strong>Direct voice from UAE factory floors is the biggest evidence gap.</strong></p>
+</li>
+<li>
+<p><strong>No UAE prices in AED</strong> surfaced for most of these services. This is consistent with the "hidden prices, relationship-driven" market, but it is unverified. Phase 6 phone calls must fill it in.</p>
+</li>
+<li>
+<p><strong>MiroFish was installed and verified but not run</strong> (no LLM or Zep keys; endpoints blocked). Phase 5 is a labelled substitute.</p>
+</li>
+<li>
+<p>Scores and unit economics are structured judgement. Score differences under about 0.4 are noise.</p>
+</li>
+</ol>
+<p><strong>To rerun with full Agent Reach and MiroFish capability:</strong> widen the environment's network access, provide a Reddit cookie from a secondary account (needed for Agent Reach's Reddit channel), and add LLM and Zep Cloud keys for MiroFish. See <a href="#phase0">Phase 0 · Tool setup</a>.</p><p class="top"><a href="#top">Back to top</a></p></section><section id="phase0" class="part"><p class="eyebrow">Phases</p><h2>Phase 0 · Tool setup</h2><p>UAE Engineering + Industrial + AI-Enabled Business Opportunity Discovery.
+Date: 2026-10-04. Environment: ephemeral cloud container (Linux, Python 3.11, Node 22, uv 0.8).</p>
+<h3 class="h">Summary</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Install</th>
+<th>Runs</th>
+<th>Usable for research right now</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent Reach v1.5.0 (<code>Panniantong/Agent-Reach</code> @ <code>a19a171</code>, 2026-09-16)</td>
+<td>✅</td>
+<td>✅ <code>agent-reach doctor</code> works</td>
+<td>❌ Mostly no. The container's network policy blocks nearly every target host</td>
+</tr>
+<tr>
+<td>MiroFish v0.1.0 (<code>666ghj/MiroFish</code> @ <code>7657031</code>, 2026-10-02)</td>
+<td>✅</td>
+<td>✅ Backend boots, API answers, frontend builds</td>
+<td>❌ No. It needs an LLM API key plus a Zep Cloud key, and both endpoints are blocked</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">Agent Reach</h3>
+<p>Installed per <code>docs/install.md</code> into an isolated venv (<code>~/.agent-reach-venv</code>), outside this repo.
+Ran the read-only check (<code>install --env=auto</code>), the dry run, then <code>install --env=auto --system</code> for the
+core zero-login channels only (mcporter + Exa MCP config, yt-dlp Node runtime). No login-based channel was installed.</p>
+<h3><code>agent-reach doctor</code>: 3/16 channels marked available</h3>
+<p>Doctor's "available" status does not mean the channel works from this container.
+I tested every channel live:</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Channel</th>
+<th>Doctor</th>
+<th>Live test from this container</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Web (Jina Reader <code>r.jina.ai</code>)</td>
+<td>✅</td>
+<td>❌ proxy 403</td>
+<td>Network policy</td>
+</tr>
+<tr>
+<td>YouTube (yt-dlp)</td>
+<td>✅</td>
+<td>❌ proxy 403</td>
+<td>Network policy</td>
+</tr>
+<tr>
+<td>RSS (feedparser)</td>
+<td>✅</td>
+<td>❌ for any blocked feed host</td>
+<td>Network policy</td>
+</tr>
+<tr>
+<td>Exa semantic search (mcporter)</td>
+<td>⚠️</td>
+<td>❌</td>
+<td><code>mcp.exa.ai</code> blocked, <strong>and</strong> Exa MCP now asks for OAuth browser approval (timed out headless)</td>
+</tr>
+<tr>
+<td>GitHub (gh CLI)</td>
+<td>⚠️</td>
+<td>partial</td>
+<td><code>api.github.com</code> reachable; doctor won't live-verify auth</td>
+</tr>
+<tr>
+<td>V2EX / Xueqiu</td>
+<td>⚠️</td>
+<td>❌ proxy 403</td>
+<td>Not relevant to this project</td>
+</tr>
+<tr>
+<td>Reddit</td>
+<td>❌ off</td>
+<td>❌</td>
+<td><strong>Login is mandatory</strong> (anonymous API blocked upstream). Needs OpenCLI + your Chrome session (desktop), or <code>rdt-cli</code> + a cookie you export</td>
+</tr>
+<tr>
+<td>Twitter/X</td>
+<td>⚠️</td>
+<td>❌</td>
+<td>Needs <code>twitter-cli</code> + Cookie-Editor export from <strong>your</strong> account</td>
+</tr>
+<tr>
+<td>LinkedIn</td>
+<td>⚠️</td>
+<td>❌</td>
+<td>Public pages via Jina (blocked here). Full access needs <code>mcp-server-linkedin</code> + <strong>your</strong> manual browser login</td>
+</tr>
+<tr>
+<td>Facebook / Instagram</td>
+<td>❌ off</td>
+<td>❌</td>
+<td>OpenCLI + <strong>your</strong> logged-in desktop Chrome only. Not supported on servers</td>
+</tr>
+<tr>
+<td>Bilibili / Xiaohongshu / Boss / Xiaoyuzhou</td>
+<td>❌ off</td>
+<td>—</td>
+<td>Not relevant to this project</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Reachability probe (through container egress proxy)</h3>
+<p>Blocked (403 CONNECT): r.jina.ai, google.com, youtube.com, reddit.com, old.reddit.com, mcp.exa.ai, api.exa.ai, x.com,
+linkedin.com, facebook.com, instagram.com, bing.com, duckduckgo.com, wikipedia.org, moiat.gov.ae, u.ae,
+thenationalnews.com, gulfnews.com, zawya.com, khaleejtimes.com, huggingface.co, api.openai.com,
+dashscope.aliyuncs.com, api.zep.ai, api.getzep.com.</p>
+<p>Reachable: api.github.com, api.anthropic.com, package registries (PyPI, npm).</p>
+<p>The assistant's built-in web search works but returns only titles and snippets. It doesn't surface Reddit threads
+reliably and can't open Reddit pages. Built-in page fetch is subject to the same egress block.</p>
+<h3 class="h">MiroFish</h3>
+<p>Installed per README (<code>npm run setup</code> + <code>cd backend &amp;&amp; uv sync</code>). The backend venv is ~7 GB: camel-oasis pulls torch,
+transformers and triton. Smoke test using placeholder keys: the Flask app starts, and <code>/api/graph/project/list</code> and
+<code>/api/simulation/list</code> return 200. OASIS 0.2.5 and camel-ai 0.2.78 import cleanly. <code>vite build</code> succeeds.</p>
+<p>Runtime requirements (checked in <code>backend/app/config.py</code>; startup refuses without them):</p>
+<ul>
+<li>
+<p><code>LLM_API_KEY</code> / <code>LLM_BASE_URL</code> / <code>LLM_MODEL_NAME</code>: any OpenAI-compatible endpoint. Default is Alibaba DashScope <code>qwen-plus</code>.
+    <code>api.anthropic.com</code> is reachable from this container and offers an OpenAI-compatible endpoint, so an Anthropic API
+    key would work with the current network policy (untested: needs your key).</p>
+</li>
+<li>
+<p><code>ZEP_API_KEY</code>: <strong>Zep Cloud only.</strong> Self-hosted Zep is explicitly rejected (<code>ZEP_API_URL</code> unsupported). Zep hosts are
+    blocked, so the network policy must allow them.</p>
+</li>
+<li>
+<p>Cost warning from upstream: token consumption is high. Start with fewer than 40 simulation rounds.</p>
+</li>
+</ul>
+<p>How it works: you upload seed documents (PDF/MD/TXT), it builds a GraphRAG knowledge graph in Zep, generates agent
+personas, then runs Twitter-like or Reddit-like social simulations (OASIS) followed by a ReportAgent.
+Its output is a <strong>social-opinion simulation</strong>. Every result must be labelled <strong><span class="tag sim">SIMULATED OUTCOME</span></strong>.</p>
+<h3 class="h">What is needed from the user before Phase 1</h3>
+<ol>
+<li>
+<p><strong>Network access (required).</strong> In the cloud environment settings (environment menu → Edit → Network access),
+      choose a broader level or Custom, keep the default package-manager list, and add at least:
+      <code>reddit.com, www.reddit.com, old.reddit.com, r.jina.ai, mcp.exa.ai, youtube.com, www.youtube.com, google.com</code>,
+      plus UAE sources (<code>u.ae, moiat.gov.ae, khaleejtimes.com, gulfnews.com, thenationalnews.com, zawya.com</code>).
+      Unrestricted access is simplest for open-ended research.
+      Docs: https://code.claude.com/docs/en/cloud-environments#network-access</p>
+</li>
+<li>
+<p><strong>Reddit (strongly recommended, since it's the main source).</strong> Agent Reach has no anonymous Reddit path. Options:
+      (a) export a cookie from a dedicated Reddit account with Cookie-Editor and provide it for <code>rdt-cli</code>; or
+      (b) run the research from a desktop session with OpenCLI using your own Chrome login.
+      Upstream recommends a secondary account because of ban risk.</p>
+</li>
+<li>
+<p><strong>Exa search.</strong> The Exa MCP endpoint now requests OAuth browser approval, which you would need to complete
+      (or provide an Exa API key).</p>
+</li>
+<li>
+<p><strong>Optional:</strong> Twitter/X cookie (Cookie-Editor export, secondary account), LinkedIn login (manual browser login).
+      Facebook/Instagram only work from a desktop with your logged-in Chrome.</p>
+</li>
+<li>
+<p><strong>MiroFish (only needed at Phase 5).</strong> An LLM API key (OpenAI-compatible; Anthropic works with current policy) and
+      a Zep Cloud API key (free tier), plus network access to Zep.</p>
+</li>
+</ol>
+<p>No authentication was bypassed and no credentials were obtained.</p>
+<h3 class="h">Reproduce in a fresh container</h3>
+<pre><code class="language-bash">python3 -m venv ~/.agent-reach-venv
+~/.agent-reach-venv/bin/pip install https://github.com/Panniantong/agent-reach/archive/main.zip
+export PATH=~/.agent-reach-venv/bin:$PATH
+agent-reach install --env=auto --system      # core zero-login channels only
+agent-reach doctor
+
+git clone --depth 1 https://github.com/666ghj/MiroFish.git ~/tools/MiroFish
+cd ~/tools/MiroFish &amp;&amp; cp .env.example .env   # then fill LLM_* and ZEP_API_KEY
+npm run setup &amp;&amp; (cd backend &amp;&amp; uv sync)
+npm run dev                                   # frontend :3000, backend :5001
+</code></pre><p class="top"><a href="#top">Back to top</a></p></section><section id="phase1" class="part"><p class="eyebrow">Phases</p><h2>Phase 1 · UAE pain map</h2><p>Date: 2026-10-04.
+Evidence base: <a href="#e1">E1</a> (practitioner pain), <code>E2</code> (UAE supply side), <code>E3</code> (UAE demand and policy).
+Opportunity universe: <a href="#appendix">All 182 hypotheses</a> (182 hypotheses).</p>
+<h3 class="h">How this phase was researched (read first)</h3>
+<p>The container's network policy blocked Agent Reach's channels (Reddit, Jina web reader, Exa, YouTube). Reddit cannot be read at all from this session. Evidence instead came from about 165 web searches, which return result summaries only. Practitioner voice comes from specialist forums: plctalk, Practical Machinist, eng-tips, hvac-talk, diysolarforum, solarpaneltalk, refrigeration-engineer, and expat forums. <strong>This is weaker than reading threads end to end.</strong> UAE-specific factory-floor practitioner voice is mostly missing, and the Phase 6 interviews are designed to close that gap.</p>
+<h3 class="h">1. The macro shift that matters: a resilience shock, not a policy slogan</h3>
+<ul>
+<li>
+<p><strong>2026 Hormuz disruption.</strong></p>
+<ul>
+<li>Passages through Hormuz fell more than 90%.</li>
+<li>UAE shipping costs rose 300–500%.</li>
+<li>Normalisation is not expected until 2027.</li>
+<li>Ducab: "Cable could not come easily inside the UAE", so projects switched to local suppliers.</li>
+<li>Mechanics in Kuwait report spare-parts shortages.</li>
+</ul>
+</li>
+<li>
+<p><strong>The government response is now money, not slogans</strong> (MIITE, May 2026):</p>
+<ul>
+<li>AED 180bn of offtakes to localise more than 5,000 products.</li>
+<li>An AED 1bn Industrial Resilience Fund.</li>
+<li>ADNOC's AED 200bn Industrial Resilience Program, including "Local+" and "Build-to-Demand".</li>
+<li>Oliver Wyman: local sourcing is "strongest where downtime is costly".</li>
+</ul>
+</li>
+<li>
+<p><strong>Implication.</strong> Spare parts, repair, reverse engineering, and keeping existing assets running longer moved from "nice idea" to "board-level risk" in 2026. That is the strongest timing signal in this research.</p>
+</li>
+</ul>
+<h3 class="h">2. Pain map: what goes wrong, by layer</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Pain (strongest evidence)</th>
+<th>Evidence strength</th>
+<th>Who is underserved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spare parts</strong></td>
+<td>Original-manufacturer (OEM) lead times of 12–19 weeks, sometimes about 9 months, for machine parts. 83% of UK manufacturers report parts-driven delays. In the GCC, the Hormuz disruption made this worse.</td>
+<td>High (global PV); high (GCC news)</td>
+<td>SME factories, FM firms, food and bottling lines. Large buyers already have Immensa and FTI.</td>
+</tr>
+<tr>
+<td><strong>Electronics obsolescence</strong></td>
+<td>PLCs are replaced because spares are unavailable, not because they failed. HMI touchscreen repairs are quoted at $250–5,500, or 50–60% of the price of a new unit. Drives under 5 HP are "not worth repairing".</td>
+<td>High (PV)</td>
+<td>SMEs with 10–25-year-old machines</td>
+</tr>
+<tr>
+<td><strong>Heat</strong></td>
+<td>Heat kills things. EC fans fail in summer. Ice machines lose output. Inverters derate 10–22%. Drive cabinets trip on over-temperature. Capacitor life halves for every +10 °C. A cold room can go from +5 °C to +15 °C in under 2 hours at 45 °C ambient.</td>
+<td>Medium–high (PV mechanisms; UAE amplifies them)</td>
+<td>Kitchens, cold stores, AHUs, outdoor electronics</td>
+</tr>
+<tr>
+<td><strong>Buildings</strong></td>
+<td>AC collapses every summer: residents pay up to Dh6k, and demand doubled in one week. BMS lock-in, where the original contractor holds the software. Coastal coil corrosion.</td>
+<td>High (UAE news); medium (PV)</td>
+<td>Building owners, FM firms</td>
+</tr>
+<tr>
+<td><strong>Water</strong></td>
+<td>Hidden villa leaks produce DEWA bills of Dh22k–54k. DEWA smart meters have flagged 1.3M+ leaks, which tells owners <em>that</em> they leak but not <em>where</em>.</td>
+<td>High (UAE news)</td>
+<td>Villa owners, compounds</td>
+</tr>
+<tr>
+<td><strong>Energy</strong></td>
+<td>Compressed-air leaks waste 20–30% of output, with paybacks under 1 year, but programmes stall because savings are hard to prove. The DEWA marginal tariff is 38 fils plus surcharge. A mandatory efficient-motor standard is coming (UAE.S 5051).</td>
+<td>Medium (no UAE SME voice)</td>
+<td>SME factories</td>
+</tr>
+<tr>
+<td><strong>Skills</strong></td>
+<td>Shortages of mechanical maintenance and instrument technicians; 50%+ of UAE firms report skills shortages.</td>
+<td>Medium</td>
+<td>Everyone below enterprise level</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">3. The "missing middle", confirmed</h3>
+<p>The supply side (E2) shows the same shape in almost every category:</p>
+<ul>
+<li>
+<p>traders who sell the box,</p>
+</li>
+<li>
+<p>big contractors who serve ADNOC, EGA and DEWA,</p>
+</li>
+<li>
+<p>and almost nothing productised, priced or diagnostics-led in between.</p>
+</li>
+</ul>
+<p>Specific gaps where nothing turned up in the searches:</p>
+<ul>
+<li>
+<p>No SME condition-monitoring subscription offer.</p>
+</li>
+<li>
+<p>No independent compressed-air leak-survey firm.</p>
+</li>
+<li>
+<p>No local vacuum-casting provider.</p>
+</li>
+<li>
+<p>Only one laser-cleaning player (a distributor).</p>
+</li>
+<li>
+<p>No professional whole-villa auto-shutoff installer.</p>
+</li>
+<li>
+<p>No in-stock UAE commercial-kitchen parts e-catalogue.</p>
+</li>
+<li>
+<p>No CNC shop offering instant online quotes.</p>
+</li>
+</ul>
+<p>These are hypotheses to verify in Phase 3. "Not found in 2–3 searches" does not mean "absent".</p>
+<h3 class="h">4. The 20 preliminary opportunities</h3>
+<p>Scores (0–10) are preliminary judgement from Phase 1 evidence. Full 29-criterion scoring comes in Phase 3.</p>
+<ul>
+<li>
+<p><strong>MA</strong> = Market attractiveness</p>
+</li>
+<li>
+<p><strong>TO</strong> = Technical opportunity</p>
+</li>
+<li>
+<p><strong>FE</strong> = Founder entry</p>
+</li>
+<li>
+<p><strong>SF</strong> = UAE strategic fit</p>
+</li>
+<li>
+<p><strong>TP</strong> = Test priority</p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Opportunity</th>
+<th>Core pain / evidence</th>
+<th>MA</th>
+<th>TO</th>
+<th>FE</th>
+<th>SF</th>
+<th>TP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td><strong>SME reliability route service.</strong> Vibration, IR and ultrasound visits at a fixed monthly fee, laddering into wireless sensors and alerts.</td>
+<td>Downtime, no SME offer found, ADNOC lists condition monitoring as a localisation need, ITTI/ICV bonus</td>
+<td>7</td>
+<td>8</td>
+<td>7</td>
+<td>9</td>
+<td><strong>9</strong></td>
+</tr>
+<tr>
+<td>C2</td>
+<td><strong>Scan-to-part + digital parts vault for SMEs and FM firms.</strong> Non-critical parts: scan, CAD, then print, machine or cast.</td>
+<td>12–19 week lead times, the Hormuz disruption, ADNOC/RTA proof (−50% lead time, −50% cost), no SME productised offer</td>
+<td>7</td>
+<td>9</td>
+<td>7</td>
+<td>9</td>
+<td><strong>9</strong></td>
+</tr>
+<tr>
+<td>C3</td>
+<td><strong>Compressed-air leak programme.</strong> Acoustic-imager survey, then a fix, then quarterly re-survey and monitoring.</td>
+<td>20–30% leakage, payback under 1 year, only OEM audits in UAE</td>
+<td>6</td>
+<td>6</td>
+<td>8</td>
+<td>7</td>
+<td><strong>8</strong></td>
+</tr>
+<tr>
+<td>C4</td>
+<td><strong>Precision water-leak location + auto-shutoff + monitoring</strong> (villas and compounds).</td>
+<td>Dh22k–54k bills, 1.3M DEWA alerts, only DIY retail kits</td>
+<td>7</td>
+<td>6</td>
+<td>8</td>
+<td>6</td>
+<td>7</td>
+</tr>
+<tr>
+<td>C5</td>
+<td><strong>Mobile laser cleaning</strong> (rust, paint, moulds, marine, food lines).</td>
+<td>Almost no named competitors, cheap kit, visual marketing</td>
+<td>6</td>
+<td>6</td>
+<td>8</td>
+<td>6</td>
+<td>7</td>
+</tr>
+<tr>
+<td>C6</td>
+<td><strong>Legacy automation continuity:</strong> HMI screen replacement, migration kits, stocked refurbished spares, repair front end with SLA.</td>
+<td>Strong PV pain; UAE labs exist but are opaque</td>
+<td>6</td>
+<td>8</td>
+<td>5</td>
+<td>7</td>
+<td>7</td>
+</tr>
+<tr>
+<td>C7</td>
+<td><strong>EC-fan retrofit + EC/ECM module repair</strong> for AHUs, FCUs and condensers.</td>
+<td>Summer fan failures, a 60% saving case (Swiss Tower), repair gap</td>
+<td>7</td>
+<td>6</td>
+<td>6</td>
+<td>7</td>
+<td>7</td>
+</tr>
+<tr>
+<td>C8</td>
+<td><strong>Cold-room reliability package.</strong> Monitoring, door and gasket retrofit, condenser care, alarm response.</td>
+<td>Stock lost within hours at 45 °C, cold-storage shortfall, food-security priority</td>
+<td>7</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>7</td>
+</tr>
+<tr>
+<td>C9</td>
+<td><strong>Commercial-kitchen parts e-catalogue</strong> with AI photo part ID, same-day delivery, and water-filter consumables.</td>
+<td>Buyers turn to eBay and UK suppliers; hard water</td>
+<td>6</td>
+<td>4</td>
+<td>8</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>C10</td>
+<td><strong>Vacuum casting / bridge production</strong> (10–500 parts).</td>
+<td>No local provider surfaced; low-MOQ demand</td>
+<td>4</td>
+<td>7</td>
+<td>6</td>
+<td>7</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C11</td>
+<td><strong>Small RO plant care</strong> (hotels, factories): membrane cleaning, dosing, remote monitoring.</td>
+<td>70% of Middle East RO plants suffer biofouling; CIP saves energy</td>
+<td>5</td>
+<td>6</td>
+<td>5</td>
+<td>7</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C12</td>
+<td><strong>Pump and fan efficiency packages</strong> (VFD + IE4 motor), productised.</td>
+<td>Mandatory motor standard, 38-fil tariff, Abu Dhabi pilot saved 38%</td>
+<td>6</td>
+<td>5</td>
+<td>6</td>
+<td>8</td>
+<td>6</td>
+</tr>
+<tr>
+<td>C13</td>
+<td><strong>Outdoor enclosure climate hardening + monitoring</strong> (telecom, CCTV, EV, solar, controls).</td>
+<td>Heat is the top cause of outdoor hardware failure; filters clog in days</td>
+<td>5</td>
+<td>7</td>
+<td>6</td>
+<td>7</td>
+<td>6</td>
+</tr>
+<tr>
+<td>C14</td>
+<td><strong>Diagnostics O&amp;M for orphaned commercial and villa solar</strong> (IV-curve tests, drone IR, MC4 audit).</td>
+<td>725 MW on 8,430 rooftops; inverter derating; MC4 fires</td>
+<td>5</td>
+<td>6</td>
+<td>5</td>
+<td>7</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C15</td>
+<td><strong>Tier-2 machining and gasket cutting for the Local+ manufacturers.</strong></td>
+<td>AED 200bn ADNOC pipeline; but capex and qualification required</td>
+<td>6</td>
+<td>5</td>
+<td>3</td>
+<td>9</td>
+<td>4</td>
+</tr>
+<tr>
+<td>C16</td>
+<td><strong>Online CNC and fabrication quoting broker</strong> routing to Sharjah and Ajman shops.</td>
+<td>All quoting is by phone; Hubs takes 5+ days</td>
+<td>5</td>
+<td>3</td>
+<td>8</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C17</td>
+<td><strong>On-site anti-corrosion coating of coastal HVAC coils.</strong></td>
+<td>Coil life cut to about 5 years near the coast</td>
+<td>5</td>
+<td>5</td>
+<td>6</td>
+<td>6</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C18</td>
+<td><strong>BMS de-locking + district-cooling building-side optimisation.</strong></td>
+<td>Lock-in; 3.3M RT of connected district cooling</td>
+<td>6</td>
+<td>7</td>
+<td>4</td>
+<td>7</td>
+<td>5</td>
+</tr>
+<tr>
+<td>C19</td>
+<td><strong>EV charger O&amp;M contracts</strong> for towers and compounds.</td>
+<td>~73% uptime abroad; Dubai growing from 1,860 to 10,000 points</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>6</td>
+<td>4</td>
+</tr>
+<tr>
+<td>C20</td>
+<td><strong>Measurement and verification (M&amp;V) and sub-metering subcontractor</strong> to ESCOs.</td>
+<td>30k-building target far behind; 3k Abu Dhabi buildings</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>7</td>
+<td>4</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">5. Killed at Phase 1, and why</h3>
+<ul>
+<li>
+<p><strong>Injection-moulding factory.</strong></p>
+<ul>
+<li>Prompt test: "why make it in the UAE instead of China?"</li>
+<li>Urgency, low MOQ, customisation, obsolescence and ICV <em>are</em> real UAE reasons. But every one of them points to 3D printing, vacuum casting and soft tooling, not a moulding factory.</li>
+<li>Caps, plugs, pipe protectors and irrigation fittings are high-volume commodities where the landed cost from China or India wins.</li>
+<li><strong>Killed as a starting point; kept as a later rung (aluminium soft tooling) on the C2/C10 ladder.</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Enterprise digital spare-parts inventory for oil and gas.</strong> Immensa and FTI hold it, with ADNOC Gas references and new funding in 2026.</p>
+</li>
+<li>
+<p><strong>Crowded commodity services:</strong> padel maintenance, pool service, EV charger installation, solar cleaning, commercial-kitchen repair AMCs, hydraulic hose vans, gasket trading, FDM print bureaus, building ESCO (balance-sheet game), grease traps and kitchen hood cleaning (licensed and crowded).</p>
+</li>
+<li>
+<p><strong>Delivery-fleet e-bike batteries.</strong> Owned by platforms and battery-swap operators.</p>
+</li>
+<li>
+<p><strong>Data-centre fabrication and liquid cooling.</strong> Captured by EPCs and OEMs; small firms need certification.</p>
+</li>
+</ul>
+<h3 class="h">6. The pattern that matters most: one customer, one toolkit, many problems</h3>
+<p>C1, C2, C3, C7, C8, C12 and C13 all share:</p>
+<ul>
+<li>
+<p><strong>the same buyer:</strong> the maintenance or engineering manager of an SME plant, food factory, cold store or FM contract;</p>
+</li>
+<li>
+<p><strong>the same field capability:</strong> a reliability technician with a vibration analyser, IR camera, ultrasound or acoustic imager, and a 3D scanner;</p>
+</li>
+<li>
+<p><strong>the same software:</strong> inspection reports, a digital asset register, a digital parts vault, alerts.</p>
+</li>
+</ul>
+<p>So the strongest preliminary shape is not 20 separate businesses. It is a <strong>"Reliability &amp; Parts" company for the UAE's 33,000 mostly-SME industrial firms and its FM contractors.</strong> Several entry wedges (C1, C2, C3) all lead to the same account. Phase 2 and Phase 3 test whether that holds up or whether one wedge is clearly better on its own.</p>
+<p><strong>Advancing to Phase 2:</strong> C1–C10, C12, C13. C11 and C14–C20 are parked; they may come back as adjacencies.</p><p class="top"><a href="#top">Back to top</a></p></section><section id="phase2" class="part"><p class="eyebrow">Phases</p><h2>Phase 2 · Global analogues</h2><p>Evidence: <a href="#e4">E4</a> (reliability and energy), <a href="#e5">E5</a> (parts, manufacturing and services). 56 targeted searches across US, UK, Germany, Netherlands, Australia, NZ, Singapore, Brazil and India.</p>
+<h3 class="h">What other countries have figured out (the 6 lessons that change our ideas)</h3>
+<ol>
+<li><strong>Equipment prices collapsed between 2023 and 2026.</strong> This moved several services from "specialist" to "commercially boring".</li>
+</ol>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Equipment</th>
+<th>Was</th>
+<th>Now</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acoustic leak camera</td>
+<td>Fluke ii900 $17–23k</td>
+<td>Hikmicro / CRYSOUND $9.5–11k</td>
+</tr>
+<tr>
+<td>Metrology-grade handheld scanner</td>
+<td>—</td>
+<td>Einstar 2 / MetroX about €1.1–1.4k</td>
+</tr>
+<tr>
+<td>Printer that runs PA-CF engineering nylon (HDT up to 186 °C)</td>
+<td>—</td>
+<td>$450–2,700</td>
+</tr>
+<tr>
+<td>Tri-axial wireless vibration sensor</td>
+<td>—</td>
+<td>$340–500 (Tractian's floor about $90)</td>
+</tr>
+<tr>
+<td>Continuous-wave laser cleaner</td>
+<td>US-branded $79k+</td>
+<td>Chinese $3.8–6k</td>
+</tr>
+<tr>
+<td>Wireless temperature sensor</td>
+<td>—</td>
+<td>$20–50</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code>  **A full first-capability kit for several of our ideas now costs under AED 60k.**
+</code></pre>
+<ol start="2">
+<li>
+<p><strong>Hardware is commoditised; response, remediation and trust are not.</strong> Every successful analogue makes its margin on the analyst, the technician who arrives, the gasket installed, the leak fixed or the warranty, not on the sensor.</p>
+</li>
+<li>
+<p><strong>A cheap first visit becomes a recurring programme.</strong> Direct Air gives 50% off the first survey day, Grundfos and Barkell offer free audits, and Spare Parts 3D does paid triage. The first visit exists to quantify savings or risk. Revenue comes from the fix and the repeat visits.</p>
+</li>
+<li>
+<p><strong>Find who pays to avoid the loss.</strong> Water Intelligence grew its insurer channel 45%, and insurers pay LeakBot $5 a month per home. Prevention businesses scale when a third party pays. In the UAE the realistic payers today are master developers and community managers, FM contractors carrying penalty clauses, F&amp;B groups, and plants with downtime costs. Insurers come later.</p>
+</li>
+<li>
+<p><strong>Triage before production.</strong> Only 7% of Whirlpool's spare-parts catalogue was worth printing. Deutsche Bahn printed 200,000+ parts from about 1,000 stored models. A digital vault should be a small, curated set of critical, slow-to-import parts, not a mass library.</p>
+</li>
+<li>
+<p><strong>Content and SEO are the main channel, and roll-ups are the exit.</strong> Industrial Monitor Direct publishes migration guides, Cadmore publishes cost guides, and Parts Town makes more than 70% of revenue digitally. Radwell and Parts Town grew by buying specialist SMEs. A well-documented UAE specialist can attract a buyer that wants a Gulf presence.</p>
+</li>
+</ol>
+<h3 class="h">Ideas after analogue mining (improved versions)</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Phase 1 idea</th>
+<th>Improved version</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I1</td>
+<td>C2 Scan-to-part (+ C10 folded in)</td>
+<td><strong>"Critical-wear parts" service for F&amp;B, bottling, packaging and plastics plants and marine.</strong> Paid triage audit → reverse engineering at Cadmore-level pricing → heat-rated parts (PA-CF, ASA, PA12) in 48–72 h → curated per-plant vault subscription. Vacuum casting and aluminium soft tooling added for 20–500-part runs. No pressure-retaining or safety-critical parts.</td>
+<td><strong>Stronger</strong></td>
+</tr>
+<tr>
+<td>I2</td>
+<td>C1 Route condition monitoring (+ C12 folded in)</td>
+<td><strong>Reliability route service.</strong> Fixed monthly vibration, IR and ultrasound route on 20–40 assets, plus bearing failure analysis and alignment/balancing, plus OEM-channel wireless sensors (ABB / WEG / Erbessd) on critical assets. Pump energy testing added later.</td>
+<td><strong>Neutral → stronger as a hub</strong> (crowded globally, empty for UAE SMEs)</td>
+</tr>
+<tr>
+<td>I3</td>
+<td>C3 Compressed air</td>
+<td><strong>Leak-to-savings programme.</strong> Discounted first survey → we repair (with local fittings stock) → quarterly re-survey → flow/pressure monitor at about AED 150–300/month. Dryer and condensate check suited to humid air.</td>
+<td><strong>Stronger</strong> (paybacks in weeks)</td>
+</tr>
+<tr>
+<td>I4</td>
+<td>C6 Legacy automation</td>
+<td><strong>Obsolescence audit + repair-exchange + drop-in HMI migration kits + bilingual part-number SEO + WhatsApp quoting.</strong> Partner with an existing UAE repair lab at first.</td>
+<td><strong>Stronger</strong></td>
+</tr>
+<tr>
+<td>I5</td>
+<td>C13 Enclosure hardening</td>
+<td><strong>UAE-specific active cooling.</strong> Heat exchangers fail above about 35 °C ambient, so the package is shade, reflective skin, DC or thermoelectric cooling, seals and a monitoring sensor. Local fabrication.</td>
+<td><strong>Stronger</strong> (UAE conditions exceed every analogue market)</td>
+</tr>
+<tr>
+<td>J1</td>
+<td>C8 Cold room</td>
+<td><strong>Cold-room reliability bundle</strong> in the style of The SEALS / Gasket Guy. Gaskets, strip curtains and door closers every quarter, plus sensors, an alarm-response SLA and HACCP logs.</td>
+<td><strong>Stronger</strong></td>
+</tr>
+<tr>
+<td>J2</td>
+<td>C4 Water leak</td>
+<td><strong>Pinpoint + shutoff + monitoring</strong>, sold through developers, community managers and property managers.</td>
+<td><strong>Stronger, if a third-party channel exists</strong></td>
+</tr>
+<tr>
+<td>J3</td>
+<td>C5 Laser cleaning</td>
+<td><strong>Pulsed laser maintenance programmes</strong> for F&amp;B lines, moulds and marine weld prep, not hourly ad-hoc jobs.</td>
+<td><strong>Medium</strong> (low barrier to entry; the NZ exit valuation is a warning)</td>
+</tr>
+<tr>
+<td>J4</td>
+<td>C9 Kitchen parts</td>
+<td><strong>Narrowed to filtration-as-a-service</strong> (combi ovens, coffee machines, ice machines) plus WhatsApp data-plate parts quoting. Not a broad e-shop (Parts Town is $2.4B).</td>
+<td><strong>Weaker, but a viable wedge</strong></td>
+</tr>
+<tr>
+<td>J5</td>
+<td>C7 EC retrofit</td>
+<td><strong>Narrowed to hotel FCU refurbishment + EC conversion</strong> (AirRevive model).</td>
+<td><strong>Weaker</strong> (FläktGroup is already in the UAE; UK paybacks are 2–5 years)</td>
+</tr>
+<tr>
+<td>—</td>
+<td>C10 Vacuum casting</td>
+<td>Folded into I1</td>
+<td>Not standalone</td>
+</tr>
+<tr>
+<td>—</td>
+<td>C12 Pump packages</td>
+<td>Folded into I2</td>
+<td>Not standalone (OEMs give audits away)</td>
+</tr>
+</tbody>
+</table></div>
+<p>These 10 (I1–I5, J1–J5) go forward to Phase 3.</p>
+<h3 class="h">Capability ladders now visible</h3>
+<ul>
+<li>
+<p><strong>Ladder A, "Field diagnostics":</strong> acoustic camera (I3) → IR and vibration route (I2) → wireless sensors → predictive analytics → pump energy testing → regional service. One technician skill set and one customer list: the maintenance manager.</p>
+</li>
+<li>
+<p><strong>Ladder B, "Digital parts":</strong> scanner + PA-CF printer (I1) → CAD vault → vacuum casting → aluminium soft tooling → low-volume moulding → ICV-relevant local manufacturing for Local+ manufacturers.</p>
+</li>
+<li>
+<p><strong>Ladder C, "Hot-climate electronics":</strong> enclosure cooling (I5) → enclosure monitoring → HMI and drive continuity (I4) → panel refurbishment.</p>
+</li>
+</ul>
+<p><strong>Ladders A and B serve the same account.</strong> A plant that pays for a leak survey or an IR route is the same plant whose packaging line needs a change part. This combination is the strongest structural finding so far.</p><p class="top"><a href="#top">Back to top</a></p></section><section id="phase3" class="part"><p class="eyebrow">Phases</p><h2>Phase 3 · UAE competition &amp; demand</h2><p>Evidence: <a href="#e6">E6</a> (commercial and building ideas), <a href="#e7">E7</a> (industrial ideas). Scoring is in <code>scoring/score.py</code> and <code>scoring/scores.csv</code>, and can be rerun.</p>
+<h3 class="h">Customer-base numbers that matter</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Base</th>
+<th>Size</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UAE industrial enterprises</td>
+<td>~33,000 (95% SMEs)</td>
+<td>MoIAT via E3</td>
+</tr>
+<tr>
+<td>Food &amp; beverage manufacturers</td>
+<td>2,000+ (~25% of manufacturing GDP)</td>
+<td>Dubai Media Office (E7)</td>
+</tr>
+<tr>
+<td>Rubber and plastics converters</td>
+<td>569</td>
+<td>MoIAT (E7)</td>
+</tr>
+<tr>
+<td>Dubai food establishments</td>
+<td>29,303; ~10.5 new per day</td>
+<td>Dubai Municipality via Gulf News (E6)</td>
+</tr>
+<tr>
+<td>Dubai hotels</td>
+<td>770 hotels / 158,700 rooms, 81% occupancy, AED 746 average daily rate</td>
+<td>Cavendish Maxwell (E6)</td>
+</tr>
+<tr>
+<td>Dubai EV charge points</td>
+<td>2,223 (Q1 2026), target 10,000 by Dec 2026</td>
+<td>WAM / zigwheels (E7)</td>
+</tr>
+<tr>
+<td>B2B payment reality</td>
+<td>47-day average terms; 58% of credit sales paid late</td>
+<td>Atradius 2025 (E7)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">What the UAE competition check changed</h3>
+<ul>
+<li>
+<p><strong>I3 Compressed air: confirmed.</strong> OEM audits exist (ELGi UAE, Atlas Copco AIRScan), and they give the survey away to sell compressors. No independent provider runs a survey → repair → re-survey → monitor cycle. Rough arithmetic for a mid-size plant: 7.5 kW of leaks ≈ AED 13–20k a year wasted. That makes a programme priced at AED 8–15k a year easy to justify. Plants below about 30 kW of compressors are not worth targeting.</p>
+</li>
+<li>
+<p><strong>I2 Reliability route: weaker than it looked.</strong> There is a real incumbent: Vibrant Electromechanical, which does vibration, balancing, alignment, thermography and root-cause analysis, and also trains Cat I–IV analysts. RMT Reliability has distributed Sensoteq wireless sensors since August 2024, which occupies our sensor step. Only 9 vibration-analysis jobs appear on NaukriGulf for the whole UAE, so SME demand is unproven. <strong>It is now a bolt-on to I3, not a lead business.</strong></p>
+</li>
+<li>
+<p><strong>I1 Scan-to-part: survives, but narrower.</strong></p>
+<ul>
+<li>Generic printing is a commodity: Hubs quotes instantly for Dubai, and Orbit3D, LayerX and Paradigm all exist.</li>
+<li>Nobody has positioned for F&amp;B and packaging line parts.</li>
+<li>New risk: <strong>food contact.</strong> PA-CF and ASA are not generally food-contact certified, so the service starts with non-contact parts (guards, brackets, sensor mounts, chute liners, covers) and certified PA12 where contact is needed.</li>
+<li>The real competitor is a machined UHMW or POM part from a Sharjah machine shop, so we should <em>offer machining as well as printing</em>.</li>
+</ul>
+</li>
+<li>
+<p><strong>I4 Legacy automation: confirmed, as a differentiation play.</strong></p>
+<ul>
+<li>Break-fix repair is crowded (WEDIAN, Automat, CNC Experts, Indian repairers).</li>
+<li>What nobody offers: obsolescence audits, drop-in HMI migration kits, a stocked repair-exchange pool, and searchable part-number pages.</li>
+<li>Risks: counterfeit parts and liability, HMI software licensing, and WhatsApp price-shopping.</li>
+</ul>
+</li>
+<li>
+<p><strong>J1 Cold-room bundle: confirmed, with a sharper target.</strong></p>
+<ul>
+<li>The sensor layer exists (Kelsius, Testo), and cold-room repair is done by classified-ad technicians. Nobody bundles the two.</li>
+<li>The regulatory hook is <strong>records, not sensors</strong>. Dubai Municipality accepts paper logs, but Abu Dhabi has closed establishments partly for missing fridge and freezer records.</li>
+<li>Sell to hotels, central kitchens, food distributors and chains of 5–20 outlets. Avoid single restaurants: they churn and they shop on price.</li>
+</ul>
+</li>
+<li>
+<p><strong>J2 Leak pinpointing: downgraded.</strong></p>
+<ul>
+<li>DEWA's free High Water Usage Alert already covers detection.</li>
+<li>UAE home insurance excludes gradual leaks.</li>
+<li>Tenants pay the bill while landlords own the pipes.</li>
+<li>Plumbers set a low price floor of about AED 250–1,000.</li>
+<li>It survives only as a premium pinpointing service plus valve installs: a decent small business, but <strong>no capability ladder.</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>J5 Hotel FCU EC conversion: downgraded.</strong></p>
+<ul>
+<li>Retrofitting EC fans into air-handling units is already done locally (Qey + ebm-papst + Taka at Swiss Tower, about 60% savings).</li>
+<li>Etihad ESCO and Quantum Eurostar hold the hotel ESCO relationships.</li>
+<li>Viable only as an FCU-specialist subcontractor, with long sales cycles and 90–120-day payment terms.</li>
+</ul>
+</li>
+<li>
+<p><strong>J3 Laser cleaning: killed.</strong> No UAE demand signal, dry-ice cleaning is entrenched, Chinese continuous-wave lasers undercut on price, and the NZ comparable exited below its sunk cost.</p>
+</li>
+<li>
+<p><strong>J4 Filtration-as-a-service: merged into J1.</strong> It is a commodity (Ekuep sells online), OEM dealers control warranty paperwork, and Rational's CareControl weakens the combi-oven case.</p>
+</li>
+</ul>
+<p><strong>Evidence still missing for every idea:</strong> UAE prices in AED and customer reviews. Neither appears in search results, which suggests prices are hidden and buying happens through relationships. Phase 6 phone calls and visits must fill this gap.</p>
+<h3 class="h">Scoring: 29 criteria → 4 composites → test priority</h3>
+<p>Every criterion is scored 0–10, with 10 always meaning better for us (for example, startup capital 10 = little capital needed). The composites:</p>
+<ul>
+<li>
+<p><strong>Market Attractiveness</strong> = mean of demand, pain, urgency, revenue per customer, margin, recurring revenue, downtime value, customer concentration, competition, competitor sophistication, scalability.</p>
+</li>
+<li>
+<p><strong>Technical Opportunity</strong> = mean of moat, import dependence, local manufacturing, AI value, hardware+software, service revenue, defensibility, ROI demonstrability.</p>
+</li>
+<li>
+<p><strong>Founder Entry</strong> = mean of learnability, founder fit, ability to hire expertise, capital, acquisition ease, sales cycle, asset-light.</p>
+</li>
+<li>
+<p><strong>UAE Strategic Fit</strong> = mean of future relevance, national value, import dependence, export potential, local manufacturing.</p>
+</li>
+<li>
+<p><strong>Overall Test Priority</strong> = 0.3 Market + 0.2 Technical + 0.3 Founder + 0.2 Strategic.</p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Market</th>
+<th>Technical</th>
+<th>Founder entry</th>
+<th>UAE fit</th>
+<th><strong>Test priority</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I1 Critical-wear parts (scan-to-part)</td>
+<td>6.4</td>
+<td>6.9</td>
+<td>6.6</td>
+<td>8.6</td>
+<td><strong>7.00</strong></td>
+</tr>
+<tr>
+<td>I4 Legacy automation continuity</td>
+<td>7.0</td>
+<td>6.6</td>
+<td>6.6</td>
+<td>6.4</td>
+<td><strong>6.68</strong></td>
+</tr>
+<tr>
+<td>J1 Cold-room reliability bundle</td>
+<td>7.0</td>
+<td>5.8</td>
+<td>7.4</td>
+<td>5.6</td>
+<td><strong>6.60</strong></td>
+</tr>
+<tr>
+<td>I3 Compressed-air leak-to-savings</td>
+<td>6.1</td>
+<td>5.6</td>
+<td>8.0</td>
+<td>5.2</td>
+<td><strong>6.39</strong></td>
+</tr>
+<tr>
+<td>I2 Reliability route + sensors</td>
+<td>6.3</td>
+<td>6.5</td>
+<td>5.4</td>
+<td>5.8</td>
+<td><strong>5.97</strong></td>
+</tr>
+<tr>
+<td>I5 Enclosure climate hardening</td>
+<td>5.6</td>
+<td>6.2</td>
+<td>4.9</td>
+<td>7.6</td>
+<td>5.91</td>
+</tr>
+<tr>
+<td>J2 Leak pinpoint + shutoff</td>
+<td>5.6</td>
+<td>4.2</td>
+<td>7.7</td>
+<td>4.4</td>
+<td>5.71</td>
+</tr>
+<tr>
+<td>J5 Hotel FCU EC conversion (sub)</td>
+<td>5.1</td>
+<td>5.2</td>
+<td>5.3</td>
+<td>5.8</td>
+<td>5.32</td>
+</tr>
+<tr>
+<td>J4 Filtration-as-a-service</td>
+<td>5.1</td>
+<td>3.1</td>
+<td>7.7</td>
+<td>3.6</td>
+<td>5.18</td>
+</tr>
+<tr>
+<td>J3 Pulsed laser cleaning</td>
+<td>5.1</td>
+<td>3.2</td>
+<td>6.3</td>
+<td>3.8</td>
+<td>4.82</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>How to read this.</strong> The scores are structured judgement, not measurement. Gaps under about 0.4 are not meaningful, so I1/I4/J1 and I2/I5 are effectively ties. The value is in the profile shapes:</p>
+<ul>
+<li>
+<p>I3 has the easiest entry but the weakest moat.</p>
+</li>
+<li>
+<p>I1 has the strongest national fit but the weakest demand proof.</p>
+</li>
+<li>
+<p>I5 has strong strategic and export value but is blocked by gated buyers.</p>
+</li>
+</ul>
+<h3 class="h">The 5 going to Phase 4</h3>
+<ol>
+<li>
+<p><strong>I1 Critical-wear parts:</strong> scan → CAD → print or machine or cast, plus a curated vault.</p>
+</li>
+<li>
+<p><strong>I4 Legacy automation continuity:</strong> obsolescence audit, repair-exchange, HMI migration kits.</p>
+</li>
+<li>
+<p><strong>J1 Cold-room reliability bundle,</strong> with J4 filtration as an add-on.</p>
+</li>
+<li>
+<p><strong>I3 Compressed-air leak-to-savings programme.</strong></p>
+</li>
+<li>
+<p><strong>I2 Reliability route + sensors.</strong> Chosen over I5 even though they are tied: I2 uses the same kit, visit and customer as I3, while I5's buyers are gated (vendor registration, SIRA, OEM warranties). <strong>I5 is kept as the reserve</strong>, to revisit if private charge-point operators say summer derating costs them revenue.</p>
+</li>
+</ol>
+<h3 class="h">The structural finding gets stronger</h3>
+<p>Four of the five (I1, I2, I3, I4) sell to <strong>the same person</strong>: the maintenance or engineering manager of a UAE SME plant (F&amp;B, bottling, packaging, plastics). Each solves a different version of one fear: <strong>"the line stops and we can't get it running fast enough."</strong> Phase 4 therefore evaluates each one alone, and also as entry points into a single company. Working name: <strong>"Line Continuity"</strong>.</p><p class="top"><a href="#top">Back to top</a></p></section><section id="phase4" class="part"><p class="eyebrow">Phases</p><h2>Phase 4 · Technical feasibility</h2><p>Model: <code>scoring/unit_economics.py</code> (output in <code>scoring/unit_economics_output.txt</code>). Every figure is in AED and every input is an assumption grounded in evidence E1–E7, or in the Phase 4 searches cited below.</p>
+<p>Rules applied to all five ideas:</p>
+<ul>
+<li>
+<p>The founder is <strong>unpaid</strong> in the model.</p>
+</li>
+<li>
+<p>Licence cost is AED 25k all-in (Dubai technical-services licence, AED 15–30k per <a href="https://avyanco.com/news/technical-services-license-dubai/" target="_blank" rel="noopener">avyanco</a> and <a href="https://bestaxca.com/technical-services-license-dubai/" target="_blank" rel="noopener">bestaxca</a>).</p>
+</li>
+<li>
+<p>Overhead is AED 6k/month.</p>
+</li>
+<li>
+<p>Cash need = capex + 6 months of fixed cost + 25% of Year-1 revenue tied up in receivables (UAE B2B average is 47 days, and 58% of invoices are paid late).</p>
+</li>
+</ul>
+<h3 class="h">Phase 4 search findings that changed the plan</h3>
+<ol>
+<li>
+<p><strong>Food contact is solvable.</strong> igus iglidur <strong>I151</strong> (FDA + EU 10/2011, blue so it can be detected if it breaks off) and <strong>A350</strong> (FDA + EU 10/2011, rated to 180 °C, UL94-V0) are printable food-compliant wear filaments (<a href="https://www.igus.co.uk/3d-printing/3d-printing-food-grade" target="_blank" rel="noopener">igus</a>, <a href="https://press.igus.eu/iglidur-i151-for-fda-compliant-detectable-wear-resistant-parts-in-food-technology/" target="_blank" rel="noopener">igus press</a>). This removes the main Phase 3 risk for I1. Standard MJF PA12 is <em>not</em> food-certified.</p>
+</li>
+<li>
+<p><strong>Wireless sensors need TDRA type approval.</strong> Approval costs AED 5–20k per product. The importer needs a telecom-equipment trade activity (<a href="https://www.middleeastbriefing.com/news/?p=5830" target="_blank" rel="noopener">Middle East Briefing</a>, <a href="https://www.tuv.com/market-access-services/en/certification-filter/united-arab-emirates-telecommunication-apparatus-(tdra)-approval.html" target="_blank" rel="noopener">TÜV</a>). <strong>Decision: never import our own radio hardware at the start.</strong> Resell already-approved sensors through registered UAE distributors (RMT/Sensoteq, Kelsius, Testo, ABB channel), and put our value in installation, analytics and response.</p>
+</li>
+<li>
+<p><strong>The acoustic camera is sold locally.</strong> Hikmicro AI56 costs <strong>AED 20,475</strong> and the AD21 ultrasonic detector <strong>AED 3,728</strong> at anaum.com, UAE (<a href="https://anaum.com/products/hikmicro-ai56" target="_blank" rel="noopener">anaum</a>). There is no import lead time.</p>
+</li>
+</ol>
+<h3 class="h">Feasibility summary</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th></th>
+<th>I3 Compressed air</th>
+<th>I1 Critical-wear parts</th>
+<th>J1 Cold-room bundle</th>
+<th>I4 Legacy automation</th>
+<th>I2 Reliability route</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Technical complexity</td>
+<td>Low</td>
+<td>Medium</td>
+<td>Low–medium</td>
+<td><strong>High</strong></td>
+<td>Medium–high</td>
+</tr>
+<tr>
+<td>Key hire</td>
+<td>Compressed-air technician (~AED 6.5k/mo)</td>
+<td>CAD/reverse-engineering designer (~AED 10k/mo)</td>
+<td>Refrigeration technician (~AED 6.5k + on-call)</td>
+<td>Automation engineer (~AED 17k/mo)</td>
+<td>Cat II vibration analyst (~AED 13k/mo)</td>
+</tr>
+<tr>
+<td>Capex incl. licence</td>
+<td>~85k</td>
+<td>~115k</td>
+<td>~78k</td>
+<td>~143k</td>
+<td>~130k</td>
+</tr>
+<tr>
+<td>Base Y1 revenue</td>
+<td>~397k</td>
+<td>~477k</td>
+<td>~646k</td>
+<td>~538k</td>
+<td>~440k</td>
+</tr>
+<tr>
+<td>Base Y1 EBITDA (before founder pay)</td>
+<td>+96k</td>
+<td>+134k</td>
+<td>+157k</td>
+<td>−15k</td>
+<td>+52k</td>
+</tr>
+<tr>
+<td><strong>Break-even as % of base revenue</strong></td>
+<td><strong>61%</strong></td>
+<td><strong>59%</strong></td>
+<td><strong>52%</strong></td>
+<td><strong>106%</strong></td>
+<td><strong>81%</strong></td>
+</tr>
+<tr>
+<td>Downside (50% revenue) EBITDA</td>
+<td>−27k</td>
+<td>−29k</td>
+<td>−6k</td>
+<td>−146k</td>
+<td>−88k</td>
+</tr>
+<tr>
+<td>Cash needed for Y1</td>
+<td>~260k</td>
+<td>~330k</td>
+<td>~324k</td>
+<td>~415k</td>
+<td>~354k</td>
+</tr>
+<tr>
+<td>Recurring share</td>
+<td>Medium–high</td>
+<td>Low → medium (vault)</td>
+<td><strong>High</strong></td>
+<td>Low</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Supplier ecosystem in UAE</td>
+<td>Good (Hikmicro local; fittings local)</td>
+<td>Good (printers, filaments, Sharjah machining)</td>
+<td>Good (sensors local; gasket profiles imported)</td>
+<td>Mixed (grey-market risk)</td>
+<td>Good (OEM channels)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Reading the table:</strong></p>
+<ul>
+<li>
+<p>I3, I1 and J1 can stand alone.</p>
+</li>
+<li>
+<p><strong>I4 cannot stand alone at first.</strong> A full-time automation engineer must be carried before demand is proven. Start I4 <em>asset-light</em>: broker repairs to an existing UAE lab, and sell audits and migration kits delivered by a freelance or contract engineer.</p>
+</li>
+<li>
+<p><strong>I2 should not lead.</strong> It is viable only as an upsell on I3 visits, using the same ultrasound kit and the same plant.</p>
+</li>
+</ul>
+<hr />
+<h3 class="h">Shortlisted idea profiles (the 17 fields from the brief)</h3>
+<h3>1) I3 — Compressed-air "leak-to-savings" programme</h3>
+<ul>
+<li>
+<p><strong>Problem.</strong> Compressed air leaks through quick-connects, hoses, FRLs and drains. Plants typically lose 20–30% of compressor output this way. Leaks get tagged but never fixed, and they come back.</p>
+</li>
+<li>
+<p><strong>Buyer.</strong> Plant manager or maintenance manager at an SME factory with at least 30 kW of compressors: F&amp;B, blow-moulding and plastics, packaging, metal fabrication, print.</p>
+</li>
+<li>
+<p><strong>Current solution.</strong> Free or cheap OEM audits (ELGi UAE, Atlas Copco AIRScan) that lead into selling a compressor. Otherwise, nothing.</p>
+</li>
+<li>
+<p><strong>Evidence.</strong></p>
+<ul>
+<li>eng-tips practitioners: "needs to be a regular scheduled program or you wind up in the same spot".</li>
+<li>Compressed Air Challenge: 20–30% leakage, payback under 1 year.</li>
+<li>UK SME analogue: Direct Air sells survey days and discounts the first.</li>
+<li><strong>No independent UAE provider found.</strong> (E1, E4, E7)</li>
+</ul>
+</li>
+<li>
+<p><strong>Current cost.</strong> About 7.5 kW of leaks × 6,000 h ≈ <strong>AED 13–20k a year</strong> at DEWA's 23/38 fils + surcharge. Larger plants lose multiples of this.</p>
+</li>
+<li>
+<p><strong>Frequency.</strong> Continuous. Leaks return within months.</p>
+</li>
+<li>
+<p><strong>UAE reason.</strong></p>
+<ul>
+<li>Post-Hormuz cost pressure.</li>
+<li>The DEWA marginal tariff.</li>
+<li>Abu Dhabi ETIP gives 20% weight to an energy-management system.</li>
+<li>DSM 2050 "Top 50" industrial programme.</li>
+<li>Humid air means condensate and dryer problems are common.</li>
+</ul>
+</li>
+<li>
+<p><strong>Global analogues.</strong> Direct Air Pipework, Hayley Group, IPE Search (UK); Atlas Copco AIRScan (OEM). Leak-programme monitoring: ifm moneo, Invisible Systems.</p>
+</li>
+<li>
+<p><strong>Technology.</strong> Ultrasonic and acoustic imaging, flow and pressure logging, a kWh savings calculation, basic pneumatic fitting work.</p>
+</li>
+<li>
+<p><strong>Hardware.</strong> Hikmicro AI56 (AED 20.5k, local), AD21 (AED 3.7k), clamp-on flow and power loggers (~AED 18k), fittings stock.</p>
+</li>
+<li>
+<p><strong>Our value-add.</strong> Independence (we don't sell compressors). <strong>We repair on the spot.</strong> Results are verified in AED. Quarterly re-surveys. Parts held in stock locally.</p>
+</li>
+<li>
+<p><strong>AI opportunity (real but modest).</strong></p>
+<ul>
+<li>Auto-classify and size leaks from acoustic images and dB readings.</li>
+<li>Generate tagged leak reports with AED-per-year estimates automatically.</li>
+<li>Track compressor running hours and pressure for anomaly alerts.</li>
+<li>This makes reports faster and more convincing. It does not replace the technician.</li>
+</ul>
+</li>
+<li>
+<p><strong>Revenue model.</strong></p>
+<ul>
+<li>Paid first survey: AED 3.5k, credited toward a programme.</li>
+<li>Annual programme: ~AED 12k (4 surveys + repair labour).</li>
+<li>Parts at cost + 35%.</li>
+<li>Monitoring: AED 250/month per compressor room.</li>
+<li>Gain-share option for large plants.</li>
+</ul>
+</li>
+<li>
+<p><strong>Indicative capital to test.</strong> AED ~25k: camera, detector and fittings. Licence and van can be via a partner LLC or a freelance permit at the test stage. <strong><span class="tag legal">LEGAL/REGULATORY REVIEW LATER</span>.</strong></p>
+</li>
+<li>
+<p><strong>Technical people.</strong> One mechanical or pneumatic technician. Training is 2–4 weeks with the camera vendor plus field mentoring.</p>
+</li>
+<li>
+<p><strong>Expansion.</strong></p>
+<ul>
+<li>Compressor-room optimisation (sequencing, pressure-band reduction, heat recovery).</li>
+<li>Nitrogen, steam and vacuum leaks.</li>
+<li>Ultrasound bearing checks, leading into I2.</li>
+<li>Energy audits for the Abu Dhabi ETIP score.</li>
+</ul>
+</li>
+<li>
+<p><strong>Defensibility.</strong> Weak on its own. A trader can buy the camera. The moat is (a) verified-savings data across many plants, (b) repair capability, and (c) the account relationship used to sell I1 and I4. <strong>Treat I3 as a wedge, not the castle.</strong></p>
+</li>
+<li>
+<p><strong>First validation.</strong> Rent or borrow an acoustic camera (or buy the AD21 for AED 3.7k). Run <strong>5 free leak walks</strong> at plants in Sharjah, Ajman or DIC. Count the leaks, compute AED per year, and ask each plant to sign a paid programme. Target: at least 2 of 5 sign.</p>
+</li>
+</ul>
+<h3>2) I1 — Critical-wear parts: scan → CAD → print, machine or cast, plus a curated vault</h3>
+<ul>
+<li>
+<p><strong>Problem.</strong> Non-critical wear and change parts break on packaging, bottling and food lines: guides, star-wheel segments, guards, brackets, sensor mounts, chute liners, gripper fingers, knobs, covers. The OEM part takes 6–19 weeks, or no longer exists, and costs 5–50× what it should.</p>
+</li>
+<li>
+<p><strong>Buyer.</strong> Engineering or maintenance manager at an F&amp;B, bottling, packaging or plastics plant. Also FM contractors and marine operators.</p>
+</li>
+<li>
+<p><strong>Current solution.</strong></p>
+<ul>
+<li>Wait for the OEM.</li>
+<li>Improvise a fix in the workshop.</li>
+<li>Ask a Sharjah machine shop to copy the part by eye.</li>
+<li>For oil &amp; gas only: Immensa or FTI.</li>
+</ul>
+</li>
+<li>
+<p><strong>Evidence.</strong></p>
+<ul>
+<li>Practical Machinist: 16–19 week spindles, 9-month toolchanger parts.</li>
+<li>Fluke survey: 83% of UK plants delayed by unavailable parts.</li>
+<li>Pet-food plant: a £45 printed part replaced one causing £5k/day downtime.</li>
+<li>Suntory: −83% lead time, −70% cost.</li>
+<li>ADNOC Gas: −50% lead time. RTA: 90% faster sourcing.</li>
+<li>Hormuz disruption made imports slower and dearer. (E1, E3, E5)</li>
+</ul>
+</li>
+<li>
+<p><strong>Current cost.</strong> The part itself is AED 200–5,000. <strong>Downtime is AED 5–50k/day</strong> for a food or packaging line (inferred from the £5k/day case). Validate this.</p>
+</li>
+<li>
+<p><strong>Frequency.</strong> Plant-specific. Validate with the triage audit: Spare Parts 3D found only 7% of a catalogue suits printing.</p>
+</li>
+<li>
+<p><strong>UAE reason.</strong></p>
+<ul>
+<li>Import dependence, plus the Hormuz disruption.</li>
+<li>"Make it in the Emirates" localisation.</li>
+<li>Ladder toward ICV-relevant local manufacturing.</li>
+<li>More than 2,000 F&amp;B and 569 plastics firms.</li>
+<li>Hot plant rooms need heat-rated materials.</li>
+</ul>
+</li>
+<li>
+<p><strong>Global analogues.</strong> Cadmore (US reverse engineering, $300–1,500 per part); Spare Parts 3D / DigiPART (triage); Replique; Deutsche Bahn; Wilhelmsen/Ivaldi (marine).</p>
+</li>
+<li>
+<p><strong>Technology.</strong> Structured-light scanning, CAD reconstruction, materials selection (iglidur A350/I151, PA-CF, ASA, PA12), FDM printing, machining via Sharjah partners, and later vacuum casting.</p>
+</li>
+<li>
+<p><strong>Hardware.</strong> EinScan-class handheld scanner plus an Einstar 2, two enclosed engineering printers, CAD/RE software. About <strong>AED 90k</strong>.</p>
+</li>
+<li>
+<p><strong>Our value-add.</strong></p>
+<ul>
+<li>Diagnosis: what is critical and slow to import.</li>
+<li>Material engineering for heat and food contact.</li>
+<li>48–72 h turnaround.</li>
+<li>The digital record and fast reorder.</li>
+<li>Choosing the right process (print vs machine vs cast).</li>
+<li>Avoid safety-critical and pressure-retaining parts. Leave those to Immensa and FTI or partner with them.</li>
+</ul>
+</li>
+<li>
+<p><strong>AI opportunity (moderate).</strong></p>
+<ul>
+<li>Triage the plant's spare-parts and BOM lists to find printable, economic candidates (the DigiPART approach).</li>
+<li>Identify parts from photos (WhatsApp in → candidate match).</li>
+<li>Generate quotes automatically from scan volume, material and process.</li>
+<li><strong>This is where the founder's LLM and n8n skills create a real speed advantage.</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Revenue model.</strong></p>
+<ul>
+<li>Paid triage audit: AED 3–5k.</li>
+<li>Reverse-engineering fee: AED 1–3.5k per part.</li>
+<li>Production priced on downtime value, not grams.</li>
+<li>Vault subscription: AED 500–1,500/month per plant (stored designs, 48 h reprint SLA, priority).</li>
+</ul>
+</li>
+<li>
+<p><strong>Indicative capital to test.</strong> About AED 15k (Einstar 2 + one printer + igus filaments). Machining outsourced.</p>
+</li>
+<li>
+<p><strong>Technical people.</strong> One mechanical design engineer with reverse-engineering experience (Geomagic or Fusion). Junior to mid level, AED 8–12k.</p>
+</li>
+<li>
+<p><strong>Expansion.</strong></p>
+<ul>
+<li>Vacuum casting for 20–500 parts.</li>
+<li>Aluminium soft tooling and low-volume moulding.</li>
+<li>3D scanning of plant rooms for retrofit design.</li>
+<li>Dimensional QC inspection.</li>
+<li>Becoming a tier-2 supplier to Local+ manufacturers.</li>
+</ul>
+</li>
+<li>
+<p><strong>Defensibility.</strong> Medium:</p>
+<ul>
+<li>The vault creates lock-in.</li>
+<li>Accumulated material and heat failure data.</li>
+<li>Plant-specific relationships.</li>
+<li>The capability ladder into casting and moulding.</li>
+</ul>
+</li>
+<li>
+<p><strong>First validation.</strong> <strong>10 plant walk-throughs.</strong> Ask each plant: "which 10 parts would you never want to wait for?" Count parts with OEM lead time over 3 weeks or price over AED 2k. Deliver 3 parts free or at cost, then measure whether the plant reorders and pays for the next ones.</p>
+</li>
+</ul>
+<h3>3) J1 — Cold-room reliability bundle (+ filtration add-on)</h3>
+<ul>
+<li>
+<p><strong>Problem.</strong> At 45 °C ambient a failed cold room spoils stock within hours. Door gaskets, strip curtains and door closers degrade every 3–12 months and cause icing and excursions. Small operators keep paper logs and spot failures late.</p>
+</li>
+<li>
+<p><strong>Buyer.</strong> Operations or engineering manager at hotels, central and cloud kitchens, food distributors, and restaurant chains with 5–20 outlets.</p>
+</li>
+<li>
+<p><strong>Current solution.</strong></p>
+<ul>
+<li>Classified-ad cold-room technicians, called after the failure.</li>
+<li>FM contracts (AMCs).</li>
+<li>DIY loggers (Testo) or SaaS sensors (Kelsius) with nobody contracted to respond.</li>
+</ul>
+</li>
+<li>
+<p><strong>Evidence.</strong></p>
+<ul>
+<li>Dubai has 29,303 food establishments, opening at about 10.5 a day.</li>
+<li>Dubai Municipality requires ≤5 °C chilled and ≤−18 °C frozen, with daily logs.</li>
+<li>ADAFSA closed outlets in 2024 partly for missing temperature records.</li>
+<li>Analogues: The SEALS (6 units) and Gasket Guy (19 locations). (E1, E4, E6)</li>
+</ul>
+</li>
+<li>
+<p><strong>Current cost.</strong> A single excursion loses AED 5–50k+ of stock (vendor and expert claims; validate). Plus inspection penalties.</p>
+</li>
+<li>
+<p><strong>Frequency.</strong> Gaskets wear every 3–12 months. Summer peaks drive failures.</p>
+</li>
+<li>
+<p><strong>UAE reason.</strong></p>
+<ul>
+<li>Heat.</li>
+<li>Food-security priority and a cold-storage shortfall of at least 125k m².</li>
+<li>Hormuz made replacement imported stock slower and dearer.</li>
+</ul>
+</li>
+<li>
+<p><strong>Global analogues.</strong> The SEALS, Gasket Guy; Checkit (UK); Monnit / Danfoss Alsense.</p>
+</li>
+<li>
+<p><strong>Technology.</strong> Refrigeration servicing, gasket fabrication from roll stock, approved wireless temperature and door sensors, alerting, compliance-ready reports.</p>
+</li>
+<li>
+<p><strong>Hardware.</strong> Gasket profile stock and corner welder, refrigeration tools, resold TDRA-approved sensors and gateways. About <strong>AED 53k</strong> before licence.</p>
+</li>
+<li>
+<p><strong>Our value-add.</strong></p>
+<ul>
+<li><strong>One accountable party</strong> for sensors, physical fixes, alarm response and inspection-ready records.</li>
+<li>Gaskets made locally the same day.</li>
+</ul>
+</li>
+<li>
+<p><strong>AI opportunity (moderate, credible).</strong></p>
+<ul>
+<li>Detect defrost and compressor anomalies and door-left-open patterns from temperature curves, before an excursion.</li>
+<li>Auto-generate HACCP / Food Code logs and corrective-action records.</li>
+<li>WhatsApp alert triage.</li>
+</ul>
+</li>
+<li>
+<p><strong>Revenue model.</strong></p>
+<ul>
+<li>About <strong>AED 450–900 per cold room per month</strong>, covering sensors, monitoring, 4 visits and alarm response.</li>
+<li>Installation fee.</li>
+<li>Parts outside the bundle.</li>
+<li>Filtration add-on for ice and coffee machines.</li>
+</ul>
+</li>
+<li>
+<p><strong>Indicative capital to test.</strong> About AED 20k: gasket stock, sensors for 2 pilot accounts, and a partner refrigeration technician on call.</p>
+</li>
+<li>
+<p><strong>Technical people.</strong> One refrigeration technician, plus an on-call rota or partner.</p>
+</li>
+<li>
+<p><strong>Expansion.</strong></p>
+<ul>
+<li>Reach-in fridges and blast chillers.</li>
+<li>Pharmacy and clinic vaccine fridges (DHA).</li>
+<li>Food distributors' reefer trucks.</li>
+<li>Kitchen equipment PM.</li>
+<li>Franchise-style replication across emirates and the GCC.</li>
+</ul>
+</li>
+<li>
+<p><strong>Defensibility.</strong> Medium. Response network density, plus compliance data history, plus account bundling. Monitoring alone is a commodity.</p>
+</li>
+<li>
+<p><strong>First validation.</strong> Sell <strong>2 paid pilots</strong> (one hotel, one central kitchen) of 3 months at about AED 600 per room per month. Test whether a chain will pay for <em>guaranteed response</em> on top of its existing AMC.</p>
+</li>
+<li>
+<p><strong>Founder-fit caveat.</strong> This is the most "service-ops" of the five. It is less aligned with the industrial-engineering ladder than I1/I3/I4.</p>
+</li>
+</ul>
+<h3>4) I4 — Legacy automation continuity</h3>
+<ul>
+<li>
+<p><strong>Problem.</strong> Machines from 2000–2012 run obsolete PLCs, HMIs and drives (S7-300/400, SLC500, PanelView, older Red Lion and Siemens panels). When one fails, the OEM has no stock, repair takes weeks, and full migration is quoted as a large project.</p>
+</li>
+<li>
+<p><strong>Buyer.</strong> Plant maintenance or engineering manager. Also OEM agents and machine traders.</p>
+</li>
+<li>
+<p><strong>Current solution.</strong> Panic buying on eBay or from Deira traders. Repair shops (WEDIAN, Automat, CNC Experts). Large system-integrator migrations.</p>
+</li>
+<li>
+<p><strong>Evidence.</strong></p>
+<ul>
+<li>plctalk: PLCs replaced "due to not being able to get spare parts".</li>
+<li>HMI repair quotes: $250–5,500, or 50–60% of new.</li>
+<li>Analogues: Industrial Monitor Direct drop-in kits; HMI repair at $450–2,200 with 12-month warranty.</li>
+<li>Roll-up exits (Radwell, EU Automation). (E1, E5, E7)</li>
+</ul>
+</li>
+<li>
+<p><strong>Current cost.</strong> Downtime of AED 10–100k/day, plus panic purchase premiums.</p>
+</li>
+<li>
+<p><strong>Frequency.</strong> Episodic but certain. The installed base keeps ageing.</p>
+</li>
+<li>
+<p><strong>UAE reason.</strong></p>
+<ul>
+<li>Ageing SME installed base in Sharjah, Ajman and DIC.</li>
+<li>Import delays make local repair-exchange and stock valuable.</li>
+<li>Repair instead of replacement supports the circular economy.</li>
+</ul>
+</li>
+<li>
+<p><strong>Global analogues.</strong> Essential Automation (UK), NJT and Flexa (HMI repair), Industrial Monitor Direct (migration kits + SEO), Radwell (consolidator).</p>
+</li>
+<li>
+<p><strong>Technology.</strong> PLC/HMI programming and migration, electronics repair triage, panel-cutout adaptation, documentation.</p>
+</li>
+<li>
+<p><strong>Hardware.</strong> Bench tools, exchange pool, licensed engineering software. Capex is moderate but the <strong>people cost is the risk</strong>.</p>
+</li>
+<li>
+<p><strong>Our value-add.</strong></p>
+<ul>
+<li>Obsolescence audit: a risk register per line.</li>
+<li>Drop-in migration kits that keep the same cutout and minimise reprogramming.</li>
+<li>A local exchange pool.</li>
+<li><strong>Bilingual part-number SEO pages and WhatsApp quoting</strong> (founder strength).</li>
+</ul>
+</li>
+<li>
+<p><strong>AI opportunity (strong and specific).</strong></p>
+<ul>
+<li>Read nameplate and label photos into part numbers.</li>
+<li>Look up obsolescence status and successor parts.</li>
+<li>Extract I/O and program documentation from old projects.</li>
+<li>Auto-draft migration bills of materials and quotes.</li>
+<li>Turn the founder's document-AI experience into the audit product.</li>
+</ul>
+</li>
+<li>
+<p><strong>Revenue model.</strong></p>
+<ul>
+<li>Audit: AED 3–7.5k.</li>
+<li>Migration kits and projects: AED 15–50k.</li>
+<li>Brokered repairs at 25–40% margin.</li>
+<li>Emergency call-out fee.</li>
+<li>Later: an annual "continuity plan" retainer with a guaranteed exchange unit.</li>
+</ul>
+</li>
+<li>
+<p><strong>Indicative capital to test.</strong> About AED 10k. Website and SEO, a contract engineer by the day, and repairs brokered to an existing lab.</p>
+</li>
+<li>
+<p><strong>Technical people.</strong> <strong>This is the binding constraint.</strong> One senior automation engineer (Siemens and Rockwell), AED 15–20k/month, or a profit-share partner.</p>
+</li>
+<li>
+<p><strong>Expansion.</strong></p>
+<ul>
+<li>Control-panel refurbishment.</li>
+<li>Drive and motor efficiency (VFD packages).</li>
+<li>Machine digitisation (old machine → OEE data).</li>
+<li>Regional GCC exchange hub.</li>
+</ul>
+</li>
+<li>
+<p><strong>Defensibility.</strong> Medium–high once established: know-how, exchange-pool inventory, SEO content library, installed-base data.</p>
+</li>
+<li>
+<p><strong>First validation.</strong> Publish 30 part-number and "replacement for X" pages, then measure inbound enquiries for 6 weeks. Run <strong>5 paid obsolescence audits</strong> using a contract engineer.</p>
+</li>
+</ul>
+<h3>5) I2 — Reliability route + wireless sensors (bolt-on to I3)</h3>
+<ul>
+<li>
+<p><strong>Problem.</strong> SME plants run rotating equipment until it fails. Bearing, alignment and imbalance failures cause unplanned downtime. Summer heat speeds up motor and drive failures.</p>
+</li>
+<li>
+<p><strong>Buyer.</strong> The same as I3.</p>
+</li>
+<li>
+<p><strong>Current solution.</strong> Nothing (run to failure). Or Vibrant Electromechanical, Pruftechnik and OEM service. Sensors from RMT/Sensoteq or remote platforms (Tractian, Waites).</p>
+</li>
+<li>
+<p><strong>Evidence.</strong></p>
+<ul>
+<li>Global practitioners confirm the pain.</li>
+<li>The UAE has real incumbents and <strong>thin SME demand signals</strong> (9 vibration-analyst job listings in the UAE).</li>
+<li>ADNOC lists machine condition monitoring as a localisation category. (E3, E4, E7)</li>
+</ul>
+</li>
+<li>
+<p><strong>Revenue model.</strong></p>
+<ul>
+<li>Monthly route: about AED 2–4k per site (20–40 assets).</li>
+<li>Sensors: about AED 150–250 per asset per month.</li>
+<li>Alignment, balancing and root-cause analysis jobs.</li>
+</ul>
+</li>
+<li>
+<p><strong>Hardware.</strong> Vibration collector (AED ~45k mid-range), IR camera (AED ~15k), alignment tool (AED ~25k). Ultrasound shared with I3.</p>
+</li>
+<li>
+<p><strong>Technical people.</strong> ISO 18436 Cat II analyst (AED ~10–15k). Training is available locally (Vibrant runs Mobius courses).</p>
+</li>
+<li>
+<p><strong>AI opportunity (highest of the five on paper).</strong> Spectral anomaly detection, automated fault classification, maintenance recommendations. But funded global players (Tractian, Augury) already do this well. <strong>We should resell their analytics or use an OEM's, not build our own.</strong></p>
+</li>
+<li>
+<p><strong>Defensibility.</strong> Low against incumbents. Medium as part of a multi-service account.</p>
+</li>
+<li>
+<p><strong>First validation.</strong> Offer a <strong>free thermography and ultrasound walk</strong> to each I3 customer. Convert 1 in 3 to a monthly route.</p>
+</li>
+</ul>
+<hr />
+<h3 class="h">The combined company: "Line Continuity"</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Customer</td>
+<td>Maintenance or engineering manager of a UAE SME plant (F&amp;B, bottling, packaging, plastics, light manufacturing)</td>
+</tr>
+<tr>
+<td>Promise</td>
+<td>"When your line stops, we get it running, and we stop it from stopping again."</td>
+</tr>
+<tr>
+<td>Door-opener</td>
+<td><strong>I3 leak-to-savings.</strong> Cheap kit, fast paid ROI, gets the team onto the plant floor</td>
+</tr>
+<tr>
+<td>Margin and moat</td>
+<td><strong>I1 critical-wear parts</strong> + <strong>I4 legacy automation continuity.</strong> These deal with the two things that <em>actually</em> stop lines: parts and electronics</td>
+</tr>
+<tr>
+<td>Recurring</td>
+<td>I3 programme + I1 vault + I2 routes/sensors + I4 continuity retainer</td>
+</tr>
+<tr>
+<td>Shared assets</td>
+<td>One CRM and asset register, one AI document and quoting engine, one van, one plant relationship</td>
+</tr>
+<tr>
+<td>Capability ladder</td>
+<td>Survey kit → scanner/printer → casting/soft tooling → low-volume moulding (ICV, Local+ tier-2) → regional GCC service hub</td>
+</tr>
+<tr>
+<td>Combined Y1 test capital</td>
+<td><strong>About AED 60–100k</strong> to validate (I3 kit + I1 starter cell + I4 web/SEO + licence via partner). <strong>About AED 400–550k</strong> to run I3+I1 properly with 2 hires for 12 months, including working capital</td>
+</tr>
+</tbody>
+</table></div>
+<p>J1 (cold-room bundle) has the best standalone economics, but <strong>it serves a different buyer</strong> (F&amp;B operators, not plants). It is kept as the <strong>alternative path</strong>: the best choice if the founder prefers a service business with high recurring revenue over an industrial-engineering company.</p>
+<h3 class="h">Local manufacturing opportunity (honest)</h3>
+<ul>
+<li>
+<p><strong>Real and near-term:</strong> printed and machined replacement parts (I1), gaskets cut from roll stock (J1), and fabricated HMI migration bezels and adapter plates (I4).</p>
+</li>
+<li>
+<p><strong>Medium-term (18–36 months):</strong> vacuum casting and aluminium soft tooling for 20–5,000-part runs. This is the realistic route into "injection moulding" without starting a factory.</p>
+</li>
+<li>
+<p><strong>Not justified now:</strong> a full injection-moulding plant, metal additive manufacturing, or our own sensor hardware (because of TDRA type approval and existing funded competitors).</p>
+</li>
+</ul><p class="top"><a href="#top">Back to top</a></p></section><section id="phase5" class="part"><p class="eyebrow">Phases</p><h2>Phase 5 · Simulation</h2><blockquote>
+<h3 class="h">⚠️ <span class="tag sim">SIMULATED OUTCOME</span> — NOT EVIDENCE</h3>
+<p><strong>MiroFish was not run.</strong> It needs an LLM API key and a Zep Cloud key, and this container's network policy blocks both endpoints (see <a href="#phase0">Phase 0 · Tool setup</a>).
+As a substitute, an independent agent ran a structured 16-persona simulation over four time steps: month 0, 3, 9 and 24.
+- Persona behaviour was grounded <strong>only</strong> in this study's evidence files (P3, P4, E4–E7). No new web searches were run.
+- Behaviour not supported by evidence is marked <strong>[ASSUMPTION]</strong>.
+- Every probability and reaction below is simulated.</p>
+<p><strong>To run the real MiroFish simulation later:</strong> follow <code>mirofish/run_mirofish.py</code>, using <code>mirofish/seed-uae-line-continuity.md</code> and <code>mirofish/simulation-requirements.md</code>.</p>
+</blockquote>
+<h3 class="h">Concepts simulated</h3>
+<ul>
+<li>
+<p><strong>A — "Line Continuity."</strong> Sells to SME plants. Enters through <strong>I3</strong> (compressed-air leak-to-savings), then cross-sells <strong>I1</strong> (critical-wear parts), <strong>I4</strong> (legacy automation continuity) and <strong>I2</strong> (reliability routes).</p>
+</li>
+<li>
+<p><strong>B — J1 cold-room reliability bundle.</strong> About AED 450–900 per cold room per month. Sold to hotels, central kitchens, food distributors, and restaurant chains with 5–20 outlets.</p>
+</li>
+</ul>
+<h3 class="h">Personas (16)</h3>
+<ul>
+<li>
+<p><strong>Buyers:</strong></p>
+<ul>
+<li>maintenance manager at an F&amp;B plant in Sharjah</li>
+<li>owner of a plastics converter in Ajman</li>
+<li>engineering manager at a bottled-water group</li>
+<li>procurement officer at a packaging plant</li>
+<li>hotel chief engineer</li>
+<li>operations manager at a central kitchen</li>
+</ul>
+</li>
+<li>
+<p><strong>Competitors and partners:</strong></p>
+<ul>
+<li>local OEM packaging agent</li>
+<li>electronics repair lab</li>
+<li>compressor OEM dealer</li>
+<li>3D-print bureau</li>
+<li>CNC shop in Sharjah</li>
+<li>condition-monitoring firm</li>
+<li>sensor SaaS vendor</li>
+<li>facilities-management (FM) company</li>
+</ul>
+</li>
+<li>
+<p><strong>Others:</strong> a senior automation engineer (a hiring target) and a lender.</p>
+</li>
+</ul>
+<h3 class="h">Results — <span class="tag sim">SIMULATED OUTCOME</span></h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Question</th>
+<th>A: Line Continuity</th>
+<th>B: Cold-room bundle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Adoption</strong></td>
+<td>First paid I3 programme: <strong>25–45%</strong> of plants walked. Retention at month 24: <strong>55–75%</strong>. Cross-sell at month 24: I1 <strong>30–45%</strong>, I4 <strong>10–20%</strong>, I2 <strong>10–20%</strong>. Owner-run plants buy first. Large groups stay out of reach for about 24 months.</td>
+<td>Paid pilot: <strong>20–35%</strong> of qualified pitches. Retention at month 24: central kitchens and chains <strong>65–85%</strong>, hotels <strong>40–60%</strong> (hotels drift to FM bundles).</td>
+</tr>
+<tr>
+<td><strong>2. Competitor reaction</strong></td>
+<td>The compressor OEM counters with free audits and replacement quotes. It <strong>doesn't copy repair + re-survey</strong>, because that would cannibalise compressor sales [ASSUMPTION]. The repair-lab partner goes around us within 6–9 months. The CNC shop copies once it holds the drawing. The OEM agent warns about warranty and "non-genuine" parts.</td>
+<td>The sensor vendor adds a response partner and copies the bundle within <strong>6–12 months</strong>. FM firms bundle monitoring at token prices within 9–18 months.</td>
+</tr>
+<tr>
+<td><strong>3. Engineer trust</strong></td>
+<td>Printed parts are trusted for <strong>non-contact, non-safety parts on out-of-warranty machines</strong>, and not in the food zone. Migrations are trusted because of <strong>the engineer, not the brand</strong>; a 12-month warranty is the minimum. <strong>Independent leak verification is the strongest trust asset</strong>, but only if savings are metered, not claimed.</td>
+<td>Trust is built by night response within hours. <strong>One missed alarm breaks it.</strong></td>
+</tr>
+<tr>
+<td><strong>4. Pricing</strong></td>
+<td>I3: <strong>mid price wins</strong> (AED 12k/yr, with the survey credited, so effectively free on signing). A premium savings guarantee only works for plants above about 75 kW. I1: reverse-engineering fee plus pricing on downtime avoided. The vault converts only after 3 or more parts have been delivered.</td>
+<td><strong>AED 600–650</strong> per room per month wins with chains. <strong>AED 900 with a 4-hour SLA and a stock-loss credit</strong> wins with hotels and central kitchens. AED 450 attracts churn.</td>
+</tr>
+<tr>
+<td><strong>5. Copyability</strong></td>
+<td>Easy to copy: the camera, printing, sensors. Hard to copy: <strong>a verified-savings dataset across plants, per-plant parts vaults with failure history, an obsolescence register, and a bilingual part-number SEO library. No single competitor spans compressors, parts and electronics.</strong></td>
+<td>Easy to copy apart from <strong>route density for night response</strong> and compliance history.</td>
+</tr>
+<tr>
+<td><strong>6. Supplier risk</strong></td>
+<td>Hikmicro: low (there are alternatives). igus filament: medium (imported, so hold 3 months of stock; never substitute generic filament in the food zone). <strong>Repair-lab partner: high</strong> (use two labs and our own labelling). Grey-market automation parts: high.</td>
+<td><strong>Sensor vendor: medium-high.</strong> If Kelsius supplies the sensors, it owns the data and the customer. Prefer neutral distributors. Gasket stock is imported, so watch the summer peak.</td>
+</tr>
+<tr>
+<td><strong>7. What breaks first as it scales</strong></td>
+<td><strong>5 accounts:</strong> founder time. <strong>25 accounts:</strong> shutdown-window clashes, about <strong>AED 100–150k stuck in receivables</strong>, and the need for an automation engineer. <strong>75 accounts:</strong> 3–4 technicians plus a CAD designer; cash fails unless billed in advance.</td>
+<td><strong>25 accounts (~100 rooms):</strong> one on-call technician can't meet the SLA. <strong>75 accounts:</strong> a dispatcher and a rota of 3+ technicians; AED 400–500k of receivables unless billed monthly in advance.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">Five simulated insights</h3>
+<ol>
+<li>
+<p><strong>I3 converts only as a near-free wedge.</strong> OEM audits are free, so revenue must come from the repair programme, not the survey.</p>
+</li>
+<li>
+<p><strong>The whole of thesis A depends on one link: cross-selling I1 and I4.</strong> Below about 25% cross-sell, A is a low-moat leak-fixing business. <strong>This is the single most important number to measure in the field.</strong></p>
+</li>
+<li>
+<p><strong>B reaches revenue faster and has better standalone economics</strong> (break-even at 52% of base). But it gets copied within 6–12 months, and night response is its first operational failure point.</p>
+</li>
+<li>
+<p><strong>Trust is personal and depends on the category.</strong> Parts outside the food zone on out-of-warranty machines are the beachhead. Large groups come later.</p>
+</li>
+<li>
+<p><strong>Partners are latent competitors.</strong> This applies to the repair lab, the CNC shop, the sensor vendor and the FM firm. Control of drawings, data and customer contact has to be designed in from day one.</p>
+</li>
+</ol>
+<h3 class="h">Simulated verdict</h3>
+<p><strong>A (Line Continuity)</strong> wins on defensibility and founder fit, <em>if</em> I1 cross-sell reaches at least 30% by month 9. <strong>B</strong> is the safer cash path but is likely to be commoditised. Run the cheap Phase 6 tests for both in parallel, and decide on <strong>measured</strong> cross-sell and pilot conversion, not on this simulation.</p>
+<h3 class="h">Falsification tests (moved into Phase 6)</h3>
+<ol>
+<li>
+<p>Fewer than 1 of 5 walked plants signs a paid programme even with repairs included. <strong>Or</strong> 4–5 of 5 sign at the full AED 3.5k with no credit. Either result breaks the conversion model.</p>
+</li>
+<li>
+<p>OEM dealers already run independent repair-and-re-survey programmes, or plants say "we already have that".</p>
+</li>
+<li>
+<p>Fewer than 3 of 10 walked plants name 3 or more parts with OEM lead time over 3 weeks or cost over AED 2k.</p>
+</li>
+<li>
+<p>Hotels with AMCs pay for guaranteed response at a rate equal to or higher than central kitchens.</p>
+</li>
+<li>
+<p>Kelsius or FM firms already sell a priced "monitoring + response + gasket" bundle in 2026.</p>
+</li>
+</ol><p class="top"><a href="#top">Back to top</a></p></section><section id="phase6" class="part"><p class="eyebrow">Phases</p><h2>Phase 6 · Field validation</h2><p><strong>Goal.</strong> Before committing serious capital (about AED 400–550k), replace the study's weakest evidence with first-hand facts:</p>
+<ul>
+<li>
+<p><strong>UAE prices.</strong> No AED prices for these services showed up in search.</p>
+</li>
+<li>
+<p><strong>UAE practitioner voice.</strong> Reddit and UAE factory forums could not be read from this environment.</p>
+</li>
+<li>
+<p><strong>Willingness to pay for recurring programmes.</strong></p>
+</li>
+<li>
+<p><strong>Real lead-time and downtime numbers.</strong></p>
+</li>
+</ul>
+<p>Every company named below appeared in the research (evidence E2, E6, E7). Contact details must be found manually; none are invented here.</p>
+<hr />
+<h3 class="h">Week 0 — set-up (before any visits)</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Detail</th>
+<th>Cost (AED)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buy a Hikmicro AD21 ultrasonic leak detector</td>
+<td>anaum.com, about AED 3,728. Enough to run leak walks. Defer the AI56 camera (AED 20.5k) until a programme is sold</td>
+<td>3.7k</td>
+</tr>
+<tr>
+<td>Buy a Shining3D Einstar 2 or Revopoint MetroX, one enclosed PA-CF-capable printer, and igus iglidur A350/I151 plus PA-CF filament</td>
+<td>Lets you deliver sample parts within days</td>
+<td>12–15k</td>
+</tr>
+<tr>
+<td>One-page offers (EN/AR) for I3, I1 and I4, plus a WhatsApp Business number</td>
+<td>Founder builds these</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Interview tracker (n8n plus a sheet or CRM) with the fields listed under "Kill / go criteria" below</td>
+<td>Founder builds this</td>
+<td>0</td>
+</tr>
+<tr>
+<td><strong><span class="tag legal">LEGAL/REGULATORY REVIEW LATER</span>.</strong> Ask a business-setup adviser whether pilots on mainland plants can be invoiced through an existing mainland LLC partner before you get your own technical-services licence</td>
+<td>Do not skip this before invoicing</td>
+<td>0–1k</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">Where to go (industrial areas, in priority order)</h3>
+<ol>
+<li>
+<p><strong>Sharjah Industrial Areas 1–18, Sajja and Hamriyah Free Zone.</strong> Highest density of SME plants, turning shops and repair labs. Al Safeenah and Silver Dynamic turning shops are here; Spira Power is in Hamriyah.</p>
+</li>
+<li>
+<p><strong>Ajman Industrial Areas 1–2 and Al Jurf.</strong> Plastics converters and WEDIAN (electronics repair).</p>
+</li>
+<li>
+<p><strong>Dubai Investment Park (DIP), Dubai Industrial City and Jebel Ali / JAFZA.</strong> F&amp;B and packaging plants; Orbit3D and LayerX (3D printing) are in DIP; Americold is in JAFZA.</p>
+</li>
+<li>
+<p><strong>Abu Dhabi ICAD/Musaffah and KEZAD</strong> (weeks 4–6). Abu Dhabi's ETIP energy-tariff scheme gives 20% weight to energy management, which makes it a stronger hook for I3 there.</p>
+</li>
+<li>
+<p><strong>RAK</strong> (only if F&amp;B or bottling leads point there).</p>
+</li>
+</ol>
+<h3 class="h">Who to call, and why</h3>
+<h3>A. Target customers: aim for 25 conversations and 10 plant walk-throughs</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Segment</th>
+<th>How to find them</th>
+<th>What we test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F&amp;B manufacturers (2,000+ in UAE)</td>
+<td>Gulfood Manufacturing exhibitor lists, Dubai Industrial City and DIP directories, LinkedIn titles: "Maintenance Manager", "Engineering Manager", "Plant Engineer"</td>
+<td>I3, I1, I4</td>
+</tr>
+<tr>
+<td>Bottled water plants: Mai Dubai, Agthia/Al Ain, Berain (Al Ain), Nestlé AD, plus smaller EQM-certified brands</td>
+<td>Company sites, LinkedIn</td>
+<td>I1 change parts, I3 (blow-moulding uses a lot of compressed air)</td>
+</tr>
+<tr>
+<td>Plastics converters (569 per MoIAT)</td>
+<td>MoIAT sector page, Hamriyah, Sharjah and Ajman directories</td>
+<td>I3 (high air use), I1 (moulds, guides), I4 (old injection-machine controls)</td>
+</tr>
+<tr>
+<td>Packaging plants</td>
+<td>Gulfood Manufacturing and Plastivision Arabia exhibitor lists</td>
+<td>I1 change parts, I4 HMIs</td>
+</tr>
+<tr>
+<td>Cold-room buyers (alternative path, J1): hotel chief engineers, central kitchens, food distributors</td>
+<td>Hotel engineering associations, LinkedIn</td>
+<td>J1 bundle willingness to pay</td>
+</tr>
+</tbody>
+</table></div>
+<h3>B. Competitors and possible partners: call them as a prospective customer or partner, be honest about your intent, and record their prices</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Why call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ELGi UAE</strong> and <strong>Atlas Copco UAE</strong></td>
+<td>Ask what their compressed-air audit costs and what happens after it. Our hypothesis is that leaks get tagged but nobody fixes them</td>
+</tr>
+<tr>
+<td><strong>WEDIAN (Ajman)</strong>, <strong>Automat Electronic Services</strong>, <strong>CNC Experts</strong></td>
+<td>HMI, drive and PLC repair prices and turnaround. Test whether they would act as our repair partner, with us bringing demand and them repairing</td>
+</tr>
+<tr>
+<td><strong>Orbit3D (DIP)</strong>, <strong>LayerX (DIP)</strong>, <strong>Paradigm 3D</strong></td>
+<td>Quote a reverse-engineering job and a PA-CF part. Learn their price per part and whether they serve plant maintenance at all</td>
+</tr>
+<tr>
+<td><strong>Vibrant Electromechanical</strong>, <strong>RMT Reliability (Sensoteq)</strong></td>
+<td>Route-service prices; sensor resale and partner terms (I2)</td>
+</tr>
+<tr>
+<td><strong>Kelsius UAE</strong>, <strong>Testo UAE</strong></td>
+<td>Reseller or white-label terms for sensors (J1). Confirm TDRA status is covered by them</td>
+</tr>
+<tr>
+<td><strong>Sharjah turning and CNC shops</strong> (Al Safeenah, Silver Dynamic, Benchwork)</td>
+<td>Machining price and lead time for UHMW and POM parts. They are both our machining subcontractor and our benchmark competitor</td>
+</tr>
+<tr>
+<td><strong>Immensa</strong> and <strong>Falcon Technologies</strong></td>
+<td>Only to understand where their minimum job size sits. Possible referral partnerships for safety-critical parts we won't touch</td>
+</tr>
+<tr>
+<td><strong>anaum.com</strong> (Hikmicro), <strong>igus Middle East</strong>, a <strong>Shining3D/Creaform reseller</strong></td>
+<td>Local stock, lead times and demo units. This is the supplier-risk test</td>
+</tr>
+</tbody>
+</table></div>
+<h3>C. Technicians and engineers to interview: 6–8 people</h3>
+<ul>
+<li>
+<p>2 compressed-air or pneumatic technicians: day rates, and whether repair labour inside plants is realistic.</p>
+</li>
+<li>
+<p>2 automation engineers (Siemens/Rockwell): rates, availability for freelance audits, and interest in profit-share.</p>
+</li>
+<li>
+<p>1 reverse-engineering/CAD designer: rates and portfolio.</p>
+</li>
+<li>
+<p>1 refrigeration technician (J1).</p>
+</li>
+<li>
+<p>1 ISO 18436 Cat II vibration analyst (I2). Vibrant's Mobius courses are a source.</p>
+</li>
+</ul>
+<h3 class="h">Questions to ask (customer interviews)</h3>
+<p>Ask about the last real incident. Do not pitch until the end.</p>
+<p><strong>About downtime and parts (I1, I4)</strong></p>
+<ol>
+<li>
+<p>"Tell me about the last time a line stopped for more than 4 hours. What broke? How long did the part take? What did it cost per hour?"</p>
+</li>
+<li>
+<p>"Which 10 parts would you never want to wait for? Show me." (Walk the line and photograph them.)</p>
+</li>
+<li>
+<p>"Have any parts got slower or more expensive since the shipping disruption this year? Which ones?"</p>
+</li>
+<li>
+<p>"What do you do today when the OEM says 8 weeks? Who copies the part? How good is it?"</p>
+</li>
+<li>
+<p>"Which machines here have controls older than 2012? What happens if that HMI dies tomorrow?"</p>
+</li>
+<li>
+<p>"Would you let a non-OEM part run on the line? Which areas: food-contact, guards, brackets? What would you need to see first (material certificate, trial, warranty)?"</p>
+</li>
+</ol>
+<p><strong>About energy and compressed air (I3)</strong></p>
+<ol start="7">
+<li>
+<p>"How many kW of compressors do you run, and how many hours? When was the last leak survey? What happened to the tags?"</p>
+</li>
+<li>
+<p>"If we showed you AED X/year of leaks, would you pay for us to fix them and check again every quarter, or just take the free OEM audit?"</p>
+</li>
+</ol>
+<p><strong>About buying behaviour (all)</strong></p>
+<ol start="9">
+<li>
+<p>"Who approves a AED 5k spend? AED 15k? AED 50k? How long does it take?"</p>
+</li>
+<li>
+<p>"Do you pay maintenance vendors monthly, by PO per job, or yearly? What payment terms do you actually pay on?"</p>
+</li>
+<li>
+<p>"Where do you look when you need a new supplier: Google, WhatsApp groups, LinkedIn, the OEM agent, colleagues?"</p>
+</li>
+</ol>
+<h3 class="h">Equipment to inspect, and samples to obtain</h3>
+<ul>
+<li>
+<p>Photograph and measure <strong>10–20 candidate wear parts</strong> across at least 5 plants: guides, star-wheel segments, guards, sensor brackets, gripper fingers, knobs, covers. Record the OEM price and lead time for each.</p>
+</li>
+<li>
+<p>Photograph nameplates of <strong>HMIs, PLCs and drives</strong> on machines older than about 2012 at 5 plants. Build the first obsolescence database entries; the AI extraction step can be prototyped here.</p>
+</li>
+<li>
+<p>Run <strong>compressor-room walks</strong>: compressor nameplates, pressure setpoints, dryer type, drains, and an ultrasonic leak walk using the AD21.</p>
+</li>
+<li>
+<p><strong>Samples:</strong> print 3 replacement parts in igus A350/PA-CF free for 3 different plants. Get a machined UHMW quote for the same parts from a Sharjah shop for comparison.</p>
+</li>
+</ul>
+<h3 class="h">Pilots to run (weeks 3–6)</h3>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Pilot</th>
+<th>Offer</th>
+<th>Price</th>
+<th>Success =</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>P1 — I3 leak walk → paid programme</strong></td>
+<td>5 free AD21 leak walks, then offer the annual programme</td>
+<td>AED 3.5k first survey (credited) / about AED 12k per year</td>
+<td><strong>≥2 of 5 sign</strong> a paid survey or programme</td>
+</tr>
+<tr>
+<td><strong>P2 — I1 critical-wear parts</strong></td>
+<td>Free triage walk at 5 plants, then 3 parts delivered at cost</td>
+<td>Next parts at full price; vault offer AED 500–1,000/month</td>
+<td><strong>≥3 parts reordered at full price</strong>, and <strong>≥1 plant asks for a triage audit or vault</strong></td>
+</tr>
+<tr>
+<td><strong>P3 — I4 automation continuity (asset-light)</strong></td>
+<td>30 part-number / "replacement for X" pages (EN/AR) plus Google Business profile; 5 obsolescence audits with a contract engineer</td>
+<td>Audit AED 3–5k</td>
+<td><strong>≥10 qualified inbound enquiries in 6 weeks</strong> and <strong>≥2 paid audits</strong></td>
+</tr>
+<tr>
+<td><strong>P4 — J1 cold-room bundle (alternative path, optional)</strong></td>
+<td>2 accounts × 3 months</td>
+<td>about AED 600 per room per month</td>
+<td><strong>≥1 converts to 12 months</strong></td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">Kill / go criteria (decide at week 6)</h3>
+<ul>
+<li>
+<p><strong>GO "Line Continuity" (I3 + I1, with I4 asset-light)</strong> if all three hold:</p>
+<ul>
+<li>P1 ≥2 paid</li>
+<li>P2 ≥3 paid reorders</li>
+<li>customer interviews confirm ≥4 of 10 plants had a parts-driven stop of more than 24 hours in the last 12 months</li>
+</ul>
+</li>
+<li>
+<p><strong>Pivot to I1 + I4 without I3</strong> if leak programmes don't sell but parts and automation pain is strong.</p>
+</li>
+<li>
+<p><strong>Pivot to J1</strong> if plant buyers are unreachable or too slow but cold-room pilots convert.</p>
+</li>
+<li>
+<p><strong>KILL / rethink</strong> if fewer than 3 of 10 plants report parts-driven downtime and nobody pays for P1–P3.</p>
+</li>
+</ul>
+<h3 class="h">Falsification tests from the Phase 5 simulation (check each one explicitly)</h3>
+<p>The Phase 5 simulation is <span class="tag sim">SIMULATED OUTCOME</span>. These observations would prove it wrong:</p>
+<ol>
+<li>
+<p><strong>P1 conversion is outside the expected range.</strong> Either 0 of 5 plants sign even when repairs are included, or 4–5 of 5 sign at the full AED 3.5k without needing a credit.</p>
+</li>
+<li>
+<p><strong>Compressor OEM dealers already run independent repair + re-survey programmes</strong>, or plants tell you "we already have that".</p>
+</li>
+<li>
+<p><strong>Fewer than 3 of 10 walked plants</strong> name 3 or more parts with OEM lead time over 3 weeks or cost over AED 2k.</p>
+</li>
+<li>
+<p><strong>Hotels with AMCs pay for guaranteed response</strong> at a rate equal to or higher than central kitchens.</p>
+</li>
+<li>
+<p><strong>Kelsius or FM firms already sell a priced "monitoring + response + gasket" bundle</strong> in 2026.</p>
+</li>
+</ol>
+<p><strong>The single most important metric is cross-sell:</strong> the share of I3 plants that also ask for I1 parts or an I4 audit within the 6 weeks. If it is ≥30%, "Line Continuity" is a company. If it is below 25%, I3 on its own is a low-moat leak-fixing business, and you should pivot as described in the kill/go criteria above.</p>
+<h3 class="h">Data to capture per interaction (for the tracker)</h3>
+<ul>
+<li>
+<p>company, segment, size, decision-maker</p>
+</li>
+<li>
+<p>last downtime incident: cause, duration, part</p>
+</li>
+<li>
+<p>OEM lead time and price</p>
+</li>
+<li>
+<p>current supplier</p>
+</li>
+<li>
+<p>compressor kW</p>
+</li>
+<li>
+<p>controls vintage</p>
+</li>
+<li>
+<p>willingness to pay at three price points</p>
+</li>
+<li>
+<p>payment terms</p>
+</li>
+<li>
+<p>channel they would use to find us</p>
+</li>
+<li>
+<p>quotes and photos</p>
+</li>
+</ul>
+<p><strong>The tracker becomes the first real data asset of the company.</strong></p>
+<h3 class="h">After week 6: what MiroFish is for</h3>
+<p>Once field data exists, add it to <code>mirofish/seed-uae-line-continuity.md</code> and run <code>mirofish/run_mirofish.py</code> (requirements 2 and 4 first) to stress-test competitor reaction and pricing. Field facts go in. The output comes back labelled <strong><span class="tag sim">SIMULATED OUTCOME</span></strong>.</p><p class="top"><a href="#top">Back to top</a></p></section><section id="e1" class="part"><p class="eyebrow">Evidence</p><h2>E1 · Practitioner pain</h2><p>How this was collected: about 53 WebSearch queries. Reddit is blocked in WebSearch ("domain not accessible") and through the container proxy, so practitioner voice comes from search summaries of specialist forums: plctalk.net, practicalmachinist.com, eng-tips.com, hvac-talk.com, diysolarforum.com, solarpaneltalk.com, refrigeration-engineer.com, expatforum.com and expatwoman.com. <strong>No page could be opened.</strong> Every snippet is the search engine's summary.</p>
+<p>Labels: <strong>PV</strong> = practitioner voice · <strong>NEWS</strong> · <strong>VENDOR</strong> · <strong>RESEARCH</strong></p>
+<h3 class="h">Obsolete industrial electronics</h3>
+<ul>
+<li>
+<p><strong>P1 — PLCs are replaced because spares run out, not because they fail.</strong> Users say the PLCs themselves rarely fail; capacitors, relays and LEDs wear out. RoHS made premium PLCs obsolete, forcing migrations of systems that still worked. <a href="https://www.plctalk.net/forums/threads/are-plcs-being-replaced-more-due-to-failures-or-lack-of-spare-parts.124110/" target="_blank" rel="noopener">plctalk</a> · PV · high</p>
+</li>
+<li>
+<p><strong>P2 — HMI touchscreens.</strong> PanelView Plus, Red Lion G3 and Siemens TP700/TP170A digitisers fail while the unit still works with a mouse.</p>
+<ul>
+<li>Costs quoted: $5,500 by a Rockwell distributor; repair houses at 50–60% of new; a 15" PanelView repair at no more than $1,500; a 6" C-More screen at $250.</li>
+<li>Workarounds: eBay used units, or sourcing the digitiser itself (one RoHS "obsolete" panel turned up for about £50).</li>
+<li>Sources: <a href="https://www.plctalk.net/forums/threads/hmi-repair-services.137296/" target="_blank" rel="noopener">plctalk 1</a>, <a href="https://www.plctalk.net/forums/threads/replacing-the-touch-screen-on-a-g3-red-lion-hmi.136582/" target="_blank" rel="noopener">plctalk 2</a>, <a href="https://www.plctalk.net/forums/threads/siemens-hmi-tp700-comfort-panel-touch-screen-not-working.143369/" target="_blank" rel="noopener">plctalk 3</a> · PV · high</li>
+</ul>
+</li>
+<li>
+<p><strong>P3 — Obsolete drives.</strong> Out-of-production components carry high mark-ups. Drives under 5 HP are usually not worth repairing. OEM response times of "a week or two or more". <a href="https://www.plctalk.net/forums/threads/drive-repair-refurbishing.104832/" target="_blank" rel="noopener">plctalk</a>, <a href="https://www.eng-tips.com/threads/vfd-reliability.416507/" target="_blank" rel="noopener">eng-tips</a> · PV · high</p>
+</li>
+<li>
+<p><strong>P4 — Heat and dust kill drive cabinets.</strong> Filters plug within days, IGBTs trip on over-temperature, and opening over-cooled panels causes condensation. Electrolytic capacitor life halves for every +10 °C. <a href="https://www.plctalk.net/forums/threads/reliable-cabinet-coolers.72592/" target="_blank" rel="noopener">plctalk</a>, <a href="https://www.eng-tips.com/threads/using-fans-to-cool-an-industrial-control-panel.501282/" target="_blank" rel="noopener">eng-tips</a> · PV · medium</p>
+</li>
+<li>
+<p><strong>P5 — UAE component-level repair already exists (competition, not pain).</strong></p>
+<ul>
+<li>Automat Electronic Services: over 30,000 sq ft across UAE, KSA, Oman and Bahrain.</li>
+<li>WEDIAN (Ajman) and Horizon Elect Devices (Sharjah).</li>
+<li>VENDOR</li>
+</ul>
+</li>
+</ul>
+<h3 class="h">Spare parts, lead times, 3D printing</h3>
+<ul>
+<li>
+<p><strong>P6 — OEM lead times for machine-tool parts.</strong> These ran to months.</p>
+<ul>
+<li>Cases: a DMG spindle took 16 weeks (19 weeks of downtime in total); a Fanuc 21iT board took 18 weeks plus shipping; tool-changer parts took about 9 months.</li>
+<li>Parts support typically lasts about 7 years after end of production.</li>
+<li>Sources: <a href="https://practicalmachinist.com/forum/threads/long-lead-times-on-cnc-parts.242449/" target="_blank" rel="noopener">practicalmachinist 1</a>, <a href="https://www.practicalmachinist.com/forum/threads/parts-availability-for-machinery-is-it-20-years.72657/" target="_blank" rel="noopener">practicalmachinist 2</a> · PV · high</li>
+</ul>
+</li>
+<li>
+<p><strong>P7 — UK manufacturer survey (Fluke).</strong> 83% report maintenance delays from unavailable parts, 22% of spares inventory is obsolete, and 68% had unplanned downtime in the last 12 months. <a href="https://pressroom.fluke.com/fluke-study-83-of-uk-manufacturers-report-maintenance-delays-due-to-unavailable-parts/" target="_blank" rel="noopener">Fluke</a> · vendor-commissioned survey · medium</p>
+</li>
+<li>
+<p><strong>P8 — Hormuz 2026.</strong></p>
+<ul>
+<li>Disruption: transits fell more than 90%, and normalisation is not expected until 2027. Mechanics in Kuwait cannot find parts. Maintenance of local exhaust ventilation (LEV) was disrupted.</li>
+<li>UAE response at MIITE 2026:<ul>
+<li>AED 180bn in offtakes to localise 5,000+ products</li>
+<li>AED 1bn Industrial Resilience Fund</li>
+<li>EDGE–ICAPE electronics localisation</li>
+<li>Oliver Wyman: local sourcing is "strongest where downtime is costly"</li>
+</ul>
+</li>
+<li>Sources: <a href="https://www.khaleejtimes.com/business/hormuz-disruption-strains-supply-chains-as-iran-conflict-forces-costly-rerouting" target="_blank" rel="noopener">Khaleej Times</a>, <a href="https://kuwaittimes.com/article/47255/kuwait/other-news/spare-parts-shortage-drives-up-repair-costs-delays-vehicle-servicing-in-kuwait/" target="_blank" rel="noopener">Kuwait Times</a>, <a href="https://www.supplychainbrain.com/blogs/1-think-tank/post/44322-how-the-strait-of-hormuz-closure-has-impacted-workplace-conditions" target="_blank" rel="noopener">SupplyChainBrain</a>, <a href="https://enterpriseam.com/uae/2026/05/11/how-miite-2026-became-an-inflection-point-for-the-uaes-industrial-strategy-amid-regional-disruption/" target="_blank" rel="noopener">EnterpriseAM</a>, <a href="https://www.oliverwyman.com/media-center/2026/may/frederic-ozier-on-uae-local-procurement-shift.html" target="_blank" rel="noopener">Oliver Wyman</a>, <a href="https://tradearabia.com/News/462273/UAE-plans-%2449bn-industrial-procurement-drive-to-localise-5-000-products" target="_blank" rel="noopener">TradeArabia</a> · NEWS · high</li>
+</ul>
+</li>
+<li>
+<p><strong>P9 — 3D-printed parts and heat.</strong> PLA has a Tg of about 55–60 °C and PETG about 80 °C, while sun-exposed interiors exceed 70 °C, so ASA or engineering polymers are needed. Printers need tuning. <a href="https://www.practicalmachinist.com/forum/threads/how-many-of-you-are-using-3d-printers-at-your-shop.446631/" target="_blank" rel="noopener">practicalmachinist</a> · PV · medium. <em>No industrial in-service failure accounts found.</em></p>
+</li>
+</ul>
+<h3 class="h">Commercial kitchens</h3>
+<ul>
+<li>
+<p><strong>P10 — Ice machines lose output in hot kitchens.</strong> Ratings assume 70 °F air and 50 °F water. Fixes: a remote or water-cooled condenser and clean coils. <a href="https://hvac-talk.com/vbb/threads/102797-3rd-machine-and-it-still-won-t-make-ice-help!!" target="_blank" rel="noopener">hvac-talk</a> · PV · medium-high</p>
+</li>
+<li>
+<p><strong>P11 — Heat-wave refrigeration breakdowns outnumber engineers.</strong> Claimed: "up to 500% increase" (CloudFM, a vendor). Gulf News says a +5 °C chiller reaches +15 °C in under 2 hours at 45 °C ambient. <a href="https://gulfnews.com/uae/is-your-fridge-spoiling-your-food-in-uae-summers-experts-reveal-early-warning-signs-and-health-risks-at-45c-1.500588332" target="_blank" rel="noopener">Gulf News</a> · low-medium</p>
+</li>
+<li>
+<p><strong>P12 — Hard water in Dubai.</strong> Claimed TDS of 200–400 mg/L. Sponsored-style article · low. <em>No UAE operator voice on Rational ovens, technicians or ice machines.</em></p>
+</li>
+</ul>
+<h3 class="h">HVAC and BMS</h3>
+<ul>
+<li>
+<p><strong>P13 — Summer AC collapse in UAE buildings.</strong></p>
+<ul>
+<li>The Greens: residents spent up to Dh6,000, and AC firms saw a 100% jump in demand within a week.</li>
+<li>Expat forums: unresponsive landlords, RERA complaints, and district-cooling fee disputes.</li>
+<li>Sources: <a href="https://khaleejtimes.com/uae/uae-ac-issues-in-summer-see-some-residents-spend-up-to-dh6000-on-upgrades" target="_blank" rel="noopener">Khaleej Times</a>, <a href="https://gulfnews.com/uae/acs-break-down-as-temperature-goes-up-1.1865999" target="_blank" rel="noopener">Gulf News</a> · NEWS + resident PV · high</li>
+</ul>
+</li>
+<li>
+<p><strong>P14 — EC/ECM fan failures cluster in summer.</strong> "Anyone know of a place that repairs ECM modules?" points to a repair gap. <a href="https://www.hvac-talk.com/threads/ebm-papst-fan-failures.2241739/" target="_blank" rel="noopener">hvac-talk 1</a>, <a href="https://hvac-talk.com/vbb/threads/2234722-Anyone-know-of-a-place-that-repairs-ECM-modules" target="_blank" rel="noopener">hvac-talk 2</a> · PV · medium-high</p>
+</li>
+<li>
+<p><strong>P15 — High ambient and coastal corrosion.</strong> R410A runs at about 2,840 kPa at 50 °C. Seawater-cooled condensers deplete anodes, and coastal coil fins corrode. <a href="https://www.refrigeration-engineer.com/forum/technical-refrigeration/fundamentals/38446-r410a-in-a-r404a-compressor" target="_blank" rel="noopener">refrigeration-engineer</a> · PV · medium</p>
+</li>
+<li>
+<p><strong>P16 — BMS lock-in.</strong> Owners describe being "locked into service for life" when only the original contractor has the software. <a href="https://hvac-talk.com/vbb/threads/2237784-IT-Group-Managing-BMS-Laptops" target="_blank" rel="noopener">hvac-talk</a> · PV · medium. <em>No UAE evidence.</em></p>
+</li>
+<li>
+<p><strong>P17 — FCU condensate overflow damages ceilings.</strong> Vendor blog · low</p>
+</li>
+</ul>
+<h3 class="h">Compressed air, VFDs</h3>
+<ul>
+<li>
+<p><strong>P18 — Leak programmes stall.</strong> The savings are hard to prove and leaks recur. Typical leakage is 20–30% of output with payback under 1 year (Compressed Air Challenge). <a href="https://www.eng-tips.com/threads/air-leak-or-steam-leak-survey.29953/" target="_blank" rel="noopener">eng-tips</a>, <a href="https://www.compressedairchallenge.org/data/sites/1/media/library/factsheets/factsheet07.pdf" target="_blank" rel="noopener">CAC</a> · medium</p>
+</li>
+<li>
+<p><strong>P19 — VFD savings are often overclaimed when pumps run near full flow.</strong> SME barriers are capital, information, and having no energy manager. <a href="https://www.plctalk.net/forums/threads/energy-savings-with-vfds.80063/" target="_blank" rel="noopener">plctalk</a> · medium</p>
+</li>
+</ul>
+<h3 class="h">Water</h3>
+<ul>
+<li>
+<p><strong>P20 — Hidden villa leaks produce huge DEWA bills.</strong></p>
+<ul>
+<li>The Lakes: over Dh22,000 in 2 months.</li>
+<li>Arabian Ranches: Dh54,000.</li>
+<li>Older villas with underground tanks and irrigation are the hardest to diagnose.</li>
+<li>Sources: <a href="https://gulfnews.com/amp/story/uae%2Flakes-resident-gets-dh22000-bill-after-water-leakage-from-broken-pipe-1.1329443" target="_blank" rel="noopener">Gulf News</a>, <a href="https://thenational-the-national-prod.cdn.arcpublishing.com/uae/2022/07/16/dubai-residents-urged-to-check-for-water-leaks-to-avoid-exorbitant-bills" target="_blank" rel="noopener">The National</a> · NEWS · high</li>
+</ul>
+</li>
+<li>
+<p><strong>P21 — Palm Jumeirah pools evaporate over 600 million litres a year.</strong> Covers cut evaporation by about 95%. <a href="https://www.rgs.org/about-us/our-work/latest-news/research-spotlight-water-loss-uae" target="_blank" rel="noopener">RGS</a> · RESEARCH</p>
+</li>
+<li>
+<p><strong>P22 — About 70% of Middle East seawater RO plants suffer biofouling.</strong> RESEARCH, no operator voice</p>
+</li>
+</ul>
+<h3 class="h">Solar, EV, cold storage, skills</h3>
+<ul>
+<li>
+<p><strong>P23 — Soiling.</strong> Panels lose 13% after 3 months uncleaned and 4% when cleaned every 15 days; utility plants clean 40–45 times a year. <a href="https://research.uaeu.ac.ae/en/publications/the-influence-of-cleaning-frequency-of-photovoltaic-modules-on-po/" target="_blank" rel="noopener">UAEU</a> · high (but cleaning is commoditised)</p>
+</li>
+<li>
+<p><strong>P24 — Inverter heat derating.</strong> Output loss of 10–22%, and warranty swaps take months. <a href="https://www.solarpaneltalk.com/forum/solar-panels-for-home/solar-panels-for-your-home/434905-derating-solar-panels-and-inverters-in-hot-weather-6-2kw-is-really-4-9kw" target="_blank" rel="noopener">solarpaneltalk</a>, <a href="https://diysolarforum.com/threads/luxpower-eg4-temperature-de-rating-on-a-stupid-hot-climate.100974/" target="_blank" rel="noopener">diysolarforum</a> · PV · high</p>
+</li>
+<li>
+<p><strong>P25 — Mismatched or counterfeit MC4 connectors are the "#1 cause of solar fires".</strong> <a href="https://diysolarforum.com/threads/melted-mc4-what-happened.42848/" target="_blank" rel="noopener">diysolarforum</a> · PV · high</p>
+</li>
+<li>
+<p><strong>P26/P27 — EV charger uptime.</strong></p>
+<ul>
+<li>US: about 73% real uptime. <a href="https://electrek.co/2022/06/16/study-finds-more-than-fourth-charging-stations-were-non-functional/" target="_blank" rel="noopener">Electrek</a></li>
+<li>Dubai: 1,860 points in January 2026, targeting 10,000 by December 2026.</li>
+<li>Reports of UAE chargers "under maintenance" come only via an indirect Reddit summary.</li>
+</ul>
+</li>
+<li>
+<p><strong>P28 — Walk-in coolers.</strong> Door infiltration is the most common cause of iced coils. PV · medium</p>
+</li>
+<li>
+<p><strong>P29 — GCC maintenance skills gap.</strong> In Kuwait, 60% of shortages are in mechanical maintenance and instrument technician roles. <a href="https://gulfnews.com/business/analysis/the-widening-skills-gap-in-gulfs-construction-sector-1.2166474" target="_blank" rel="noopener">Gulf News</a> · medium</p>
+</li>
+</ul>
+<h3 class="h">Evidence gaps (honest)</h3>
+<ul>
+<li>
+<p>No Reddit content.</p>
+</li>
+<li>
+<p>No UAE factory-floor voice on obsolete electronics or repairs sent abroad.</p>
+</li>
+<li>
+<p>No UAE commercial kitchen operator voice.</p>
+</li>
+<li>
+<p>No UAE commercial and industrial (C&amp;I) solar O&amp;M evidence.</p>
+</li>
+<li>
+<p>No UAE EV-charger O&amp;M data.</p>
+</li>
+<li>
+<p>No direct UAE quotes that technicians "just replace parts".</p>
+</li>
+<li>
+<p>No UAE SME compressed-air evidence.</p>
+</li>
+</ul>
+<p><strong>These gaps must be closed in field validation (Phase 6).</strong></p><p class="top"><a href="#top">Back to top</a></p></section><section id="e2" class="part"><p class="eyebrow">Evidence</p><h2>E2 · UAE supply side</h2><p>Method: 55 WebSearch queries, summaries only. WebFetch was egress-blocked. Density estimates come from how many providers surfaced, plus yellowpages-uae and ensun listing counts. "None found" means none surfaced in 2–3 targeted queries.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Category</th>
+<th>Named UAE providers (examples)</th>
+<th>Density</th>
+<th>Sophistication</th>
+<th>Gap</th>
+<th>Verdict for a new entrant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3D scanning + reverse engineering (RE)</td>
+<td>Orbit3D (DIP), Falcon Technologies Intl (RAK; ADNOC-approved RE of obsolete spares), SECD (Sharjah), freelancers. ADNOC Gas has scanned 3,500+ parts in-house (<a href="https://www.voxelmatters.com/adnoc-gas-3d-prints-critical-replacement-parts-on-demand/" target="_blank" rel="noopener">voxelmatters</a>)</td>
+<td>Few</td>
+<td>Low–med; no published prices; no "photo on WhatsApp → quote" flow</td>
+<td>Productised broken-part → scan → CAD → part service for SMEs, FM firms and food plants</td>
+<td><strong>YES (strong)</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Industrial 3D printing</td>
+<td>Immensa (digital inventory for oil &amp; gas and power; DFDF funding Feb 2026), Sinterex (metal), FTI, Iris 3D, Inoventive, PolyEra3D, Paradigm 3D (online quote). Price benchmarks: FDM AED 0.50/g, SLS AED 3–8/g, Ti AED 30–100/g (<a href="https://uaefreezonefinder.com/uae-3d-printing-additive-manufacturing-guide-2026/" target="_blank" rel="noopener">guide</a>)</td>
+<td>Crowded (FDM/SLA); few (metal or certified parts)</td>
+<td>Medium</td>
+<td>Functional engineering-polymer spares for SMEs</td>
+<td>No standalone; <strong>YES as the output stage of #1</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>CNC, sheet metal, laser cutting</td>
+<td>Al Shurooq (5-axis), Sharjah turning shops (Ind. Area 13, Sajja), Laser Craft (Al Quoz), Hidayath, Dinco; 50+ yellowpages listings</td>
+<td>Crowded</td>
+<td>Low: phone/email quoting; no local instant quote (only Hubs, 5+ days)</td>
+<td>Instant quote + DFM front end</td>
+<td>No as a machine owner; <em>maybe</em> as a digital broker</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Injection moulding / vacuum casting</td>
+<td>Aalmir (60–1200 t), Precision Group, Trident, Multi Technologies. <strong>Vacuum or urethane casting: no UAE provider surfaced</strong></td>
+<td>Moderate / ~zero</td>
+<td>Low–med</td>
+<td>Bridge production of 10–500 parts</td>
+<td><strong>YES (niche)</strong>, bundled with #1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Industrial electronics repair</td>
+<td>Automat (30k sq ft, GCC), WEDIAN (Ajman), CNC Experts, Horizon Elect Devices</td>
+<td>Moderate</td>
+<td>Low–med; no fixed evaluation fees or published SLAs</td>
+<td>Transparency, logistics, tracking</td>
+<td>Maybe (thin margin; front end only)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Condition monitoring / predictive maintenance (PdM)</td>
+<td>Technomax ME, Pruftechnik distributor, Applus+ (ADNOC Gas contract), Nanoprecise (foreign). <strong>No SME subscription provider; no local thermography or ultrasound service named</strong></td>
+<td>Few for SMEs</td>
+<td>Enterprise only</td>
+<td>Route-based vibration / IR / ultrasound + wireless sensors for SME plants</td>
+<td><strong>YES (strong)</strong></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Compressed-air audits / energy</td>
+<td>Atlas Copco AIRScan (OEM, leads to equipment sales); building ESCOs crowded: Etihad ESCO (30k retrofits by 2030), Enova, Ista, Taka, Siemens, JCI. EC-fan retrofit case cut 60% (Qey/ebm-papst)</td>
+<td>Independent air surveys: <strong>none surfaced</strong></td>
+<td>Low for SME industrial</td>
+<td>Vendor-neutral leak surveys + small industrial audits</td>
+<td><strong>YES</strong> (air leaks); no (building ESCO)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Water leak detection / smart shutoff</td>
+<td>TÜV Austria, Buildingdoctor.ae, many handyman listings. DEWA smart meters flagged 1.3M+ leaks. Smart shutoff: DIY retail only</td>
+<td>Crowded generic; few precision; ~none for pro shutoff installs</td>
+<td>Low–med</td>
+<td>DEWA alert → non-destructive pinpoint → fixed-price report → auto-shutoff install</td>
+<td><strong>YES</strong> (B2C, marketing-led)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Solar cleaning / C&amp;I O&amp;M</td>
+<td>Noor Abu Dhabi uses 1,430 robots; DEWA study found robot reliability issues (<a href="https://www.pv-magazine.com/2026/08/14/dewa-study-assesses-pv-cleaning-robot-performance-and-safety/" target="_blank" rel="noopener">pv-magazine</a>); Al Shirawi, Yellow Door, Saffaf. Shams Dubai O&amp;M must use DEWA-approved contractors</td>
+<td>Mod–crowded</td>
+<td>Medium</td>
+<td>Diagnostics O&amp;M for orphaned systems</td>
+<td>No (cleaning); maybe (O&amp;M via partner)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>EV chargers</td>
+<td>Powertech Mobility, Tektronix, EV Zone, MUSA. Villa installs AED 1,200–7,500</td>
+<td>Crowded (install)</td>
+<td>Medium</td>
+<td>Multi-charger maintenance contracts</td>
+<td>No; small maybe</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Commercial kitchen</td>
+<td>FAJ, Hitches &amp; Glitches/Farnek, Rational ME, many WhatsApp AMCs; technicians paid AED 3–4.5k/month. Parts: buyers resort to eBay and UK online stores</td>
+<td>Crowded (repair); few (parts e-commerce)</td>
+<td>Low</td>
+<td>In-stock online parts catalogue with same-day delivery</td>
+<td>No (repair); <strong>YES</strong> (parts catalogue)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Cold-chain monitoring</td>
+<td>Kelsius (UAE page), FoodGuard, SenseAnywhere; LoRaWAN restaurant deployment</td>
+<td>Moderate (foreign SaaS)</td>
+<td>High product; weak local service</td>
+<td>Installed + calibrated + audit-ready + someone who responds to alarms</td>
+<td>Maybe–yes</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Laser cleaning / dry ice</td>
+<td>Laser: only Corrotherm (cleanLASER distributor). Dry ice: Dry Ice Dubai, Eco Green, DIS UAE; specific licence activity exists</td>
+<td>Laser very thin</td>
+<td>Low</td>
+<td>Laser rust and paint removal (marine, moulds, food, restoration)</td>
+<td><strong>YES</strong></td>
+</tr>
+<tr>
+<td>14</td>
+<td>Gaskets, hoses, marine parts</td>
+<td>Spira Power, ISMAT, 79 gasket listings, Kays/Al Dobowi and Al-Bahar hose vans; ~88% of marine components imported</td>
+<td>Crowded</td>
+<td>Low–med</td>
+<td>Small</td>
+<td>No</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Missing middle:</strong> traders on one side and ADNOC-grade contractors on the other. Between them is a gap for productised, fixed-price, diagnostics-led field services for SME plants and FM firms. Categories 6, 1, 13 and 7 share the same customer list.</p><p class="top"><a href="#top">Back to top</a></p></section><section id="e3" class="part"><p class="eyebrow">Evidence</p><h2>E3 · UAE demand &amp; policy</h2><p>How this was gathered: about 50 WebSearch queries. Only result summaries were available; WebFetch was egress-blocked on moiat.gov.ae. Figures are unverified against their primary documents.</p>
+<h3 class="h">Operation 300bn / Make it in the Emirates</h3>
+<ul>
+<li>
+<p><strong>Industrial GDP target:</strong> AED 133bn in 2021 → AED 300bn by 2031. It was about AED 190bn in 2024 (<a href="https://gulfnews.com/business/economy/uae-industrial-sector-posts-dh190-billion-gdp-contribution-in-2024-1.500335368" target="_blank" rel="noopener">Gulf News</a>). The UAE has about 33,000 industrial enterprises, and 95% of them are SMEs.</p>
+</li>
+<li>
+<p><strong>MIITE (May 2026):</strong></p>
+<ul>
+<li>AED 180bn in cumulative offtakes over 10 years to localise more than 5,000 products.</li>
+<li>AED 18bn in industrial financing.</li>
+<li>AED 1bn Industrial Resilience Fund.</li>
+<li>Food staples come first.</li>
+<li>Sources: <a href="https://tradearabia.com/News/462101/UAE-announces-$49bn-new-industrial-procurement-opportunities/IND" target="_blank" rel="noopener">TradeArabia</a>, <a href="https://enterpriseam.com/uae/2026/05/11/how-miite-2026-became-an-inflection-point-for-the-uaes-industrial-strategy-amid-regional-disruption/" target="_blank" rel="noopener">EnterpriseAM</a></li>
+</ul>
+</li>
+<li>
+<p><strong>ADNOC:</strong></p>
+<ul>
+<li>AED 90bn local-manufacturing target by 2030, covering valves, pumps, MRO, instruments, HVAC, electrical and more (<a href="https://gulfnews.com/business/energy/adnoc-revises-target-to-dh90b-for-uae-based-sourcing-of-key-industrial-parts-1.1716803526611" target="_blank" rel="noopener">Gulf News</a>).</li>
+<li><strong>The 2026 Industrial Resilience Program</strong> puts AED 200bn of contracts in play for 2026–28.<ul>
+<li><strong>"Local+"</strong> requires EPCs to source from the first 70 approved national manufacturers.</li>
+<li><strong>"Build-to-Demand"</strong> guarantees offtake to suppliers.</li>
+<li>Sources: <a href="https://www.thenationalnews.com/business/2026/05/05/adnoc-launches-industrial-resilience-programme-to-support-supply-chains/" target="_blank" rel="noopener">The National</a>, <a href="https://adnoc.ae/en/news-and-media/press-releases/2026/adnoc-launches-industrial-resilience-program-at-make-it-in-the-emirates/" target="_blank" rel="noopener">ADNOC</a></li>
+</ul>
+</li>
+<li>ADNOC's own opportunity sheet says there is limited local capability for compressors, turbine parts and control systems. It names <strong>reverse engineering of obsolete turbine parts</strong>, PLCs, <strong>machine condition monitoring</strong>, DCS and ESD (<a href="https://afdshd01.adnoc.ae/adn-prd/-/media/adnoc-v2/sub-brands/makeit/files/mep.ashx" target="_blank" rel="noopener">ADNOC file</a>).</li>
+</ul>
+</li>
+<li>
+<p><strong>EGA:</strong> identified "hundreds of millions of dirhams" a year of imports that could be localised, including filtration, valves, gaskets and seals, mobile-equipment spares, measuring equipment and drive components (<a href="https://media.ega.ae/ega-identifies-hundreds-of-millions-of-dirhams-of-opportunities-for-uae-companies-to-develop-manufacturing-capacity-and-replace-imports-in-its-supply-chain/" target="_blank" rel="noopener">EGA</a>).</p>
+</li>
+<li>
+<p><strong>ADNOC Gas + Immensa:</strong></p>
+<ul>
+<li>3,500+ parts scanned; lead times cut 50%; target saving $50m by 2028.</li>
+<li>3D-printed compressor impellers are in service.</li>
+<li>Sources: <a href="https://adnocgas.ae/en/news-and-media/press-releases/2024/adnoc-gas-using-3d-printing" target="_blank" rel="noopener">ADNOC Gas</a>, <a href="https://worldoil.com/news/2024/10/9/adnoc-gas-cuts-costs-with-3d-printing-for-critical-components" target="_blank" rel="noopener">World Oil</a></li>
+</ul>
+</li>
+<li>
+<p><strong>RTA + Serco:</strong> 3D-printed Dubai Metro spares are sourced 90% faster at 50% lower cost (<a href="https://manufactur3dmag.com/dubai-rta-and-serco-advance-use-of-3d-printed-spares-for-dubai-metro/" target="_blank" rel="noopener">Manufactur3D</a>).</p>
+</li>
+</ul>
+<h3 class="h">ICV and SME rules</h3>
+<ul>
+<li>
+<p><strong>ICV formula</strong> (<a href="https://www.moiat.gov.ae/en/programs/icv-formula" target="_blank" rel="noopener">MoIAT</a>):</p>
+<ul>
+<li>Up to 50%: UAE manufacturing cost, or for service firms, spend with third parties × their ICV.</li>
+<li>25%: investment.</li>
+<li>15%: Emiratisation.</li>
+<li>10%: expat contribution.</li>
+<li>Up to 6% bonus for advanced technology.</li>
+</ul>
+</li>
+<li>
+<p>In Abu Dhabi government procurement, ICV counts for 40% of the financial evaluation.</p>
+</li>
+<li>
+<p>New small firms with expat staff score low. <strong>The workaround is to be a high-ICV tier-2 supplier</strong>, because buyers pass a supplier's ICV through into their own score.</p>
+</li>
+<li>
+<p>The federal 10% SME procurement quota mainly applies to Emirati-owned firms in the National SME Programme.</p>
+</li>
+</ul>
+<h3 class="h">Import dependence</h3>
+<p>Gross figures include re-exports, so they overstate what is consumed locally.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Imports</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HS84 machinery</td>
+<td>$40.8bn (2024)</td>
+</tr>
+<tr>
+<td>HS85 electrical</td>
+<td>$63.1bn (2024)</td>
+</tr>
+<tr>
+<td>Valves (HS8481)</td>
+<td>~$1.7bn</td>
+</tr>
+<tr>
+<td>Pumps (HS8413)</td>
+<td>~$1.0bn</td>
+</tr>
+<tr>
+<td>Plastics (HS39)</td>
+<td>$6.6bn</td>
+</tr>
+</tbody>
+</table></div>
+<h3 class="h">Energy, water, retrofit</h3>
+<ul>
+<li>
+<p><strong>DEWA industrial tariff:</strong> 23 fils/kWh up to 10,000 kWh/month, then 38 fils, plus a fuel surcharge of about 6–6.5 fils (<a href="https://dewa.gov.ae/en/consumer/billing/slab-tariff" target="_blank" rel="noopener">DEWA</a>). In Abu Dhabi, ETIP gives 20–25 fils depending on score, and 20% of that score is for having an energy management system (<a href="https://www.kezadgroup.com/en/business-facilities/incentive" target="_blank" rel="noopener">KEZAD</a>).</p>
+</li>
+<li>
+<p><strong>Mandatory energy-efficient motor standard:</strong> UAE.S 5051:2023 (Cabinet Resolution 136/2023).</p>
+</li>
+<li>
+<p><strong>Federal DSM 2050</strong> targets 40% efficiency gains and includes a "Top 50" programme for the most energy-intensive industries (<a href="https://gulfnews.com/uae/uae-launches-2050-energy-efficiency-plan-featuring-34-national-initiatives-1.500477319" target="_blank" rel="noopener">Gulf News</a>).</p>
+</li>
+<li>
+<p><strong>Dubai</strong> has a 30,000-building retrofit target but only about 2,465 by 2017, the latest count found. <strong>Abu Dhabi</strong> has an ESPC pilot that saved 38% (VFD pumps, chillers, PV, LED) and a planned super-ESCO for 3,000 government buildings.</p>
+</li>
+<li>
+<p><strong>District cooling:</strong> Tabreed 1.57m RT, Empower about 1.7m RT.</p>
+</li>
+</ul>
+<h3 class="h">Growth segments</h3>
+<ul>
+<li>
+<p><strong>Data centres:</strong> more than 400 MW operating, growing to about 850 MW by 2029; the Stargate UAE first phase is 200 MW in 2026.</p>
+</li>
+<li>
+<p><strong>EVs:</strong> 1,860 DEWA charge points (January 2026); 47,944 EVs in Dubai; Abu Dhabi targets 70,000 charge points by 2030.</p>
+</li>
+<li>
+<p><strong>Rooftop solar:</strong> Shams Dubai has 725 MW on 8,430 buildings, with 111 approved contractors.</p>
+</li>
+<li>
+<p><strong>Cold storage:</strong> a shortfall of at least 125,000 m², plus about 80,000 m² of new demand each year (<a href="https://agbi.com/logistics/2025/02/massive-investment-in-cold-storage-needed-in-uae" target="_blank" rel="noopener">AGBI</a>).</p>
+</li>
+<li>
+<p><strong>Industrial zones:</strong> KEZAD has 2,100 customers; ICAD has 350+ manufacturers; Dubai Industrial City has 1,000+ customers.</p>
+</li>
+<li>
+<p><strong>UAE predictive maintenance market:</strong> $272m (2026) → $545m (2031), per MarketsandMarkets.</p>
+</li>
+</ul>
+<h3 class="h">Support and finance</h3>
+<ul>
+<li>
+<p><strong>Emirates Development Bank:</strong> AED 8.7bn financed in 2024 (AED 4.2bn of it to manufacturing).</p>
+</li>
+<li>
+<p><strong>Khalifa Fund:</strong> ICV readiness and light-manufacturing accelerator programmes.</p>
+</li>
+<li>
+<p><strong>ITTI use-case guide:</strong> a AED 1.5bn opportunity.</p>
+</li>
+<li>
+<p><strong>Cash-flow risk:</strong> 58% of B2B invoices are paid overdue, and large buyers pay in 45–90 days (<a href="https://atradiuscollections.com" target="_blank" rel="noopener">Atradius</a>).</p>
+</li>
+</ul>
+<h3 class="h">Skeptic's list</h3>
+<p>These look attractive but give small entrants little:</p>
+<ul>
+<li>
+<p>The AED 180bn headline is concentrated in large frameworks.</p>
+</li>
+<li>
+<p>Local+ is a closed list.</p>
+</li>
+<li>
+<p>ICV favours capital-heavy firms with Emirati payroll.</p>
+</li>
+<li>
+<p>The SME quotas are for Emirati-owned firms.</p>
+</li>
+<li>
+<p>The 3D-printed buildings target has barely moved.</p>
+</li>
+<li>
+<p>ESCO work needs a balance sheet.</p>
+</li>
+<li>
+<p>FM is labour arbitrage.</p>
+</li>
+<li>
+<p>EV and data-centre build-outs are captured by owners and global EPCs.</p>
+</li>
+</ul><p class="top"><a href="#top">Back to top</a></p></section><section id="e4" class="part"><p class="eyebrow">Evidence</p><h2>E4 · Analogues: reliability &amp; energy</h2><p>Based on 28 web searches, using result summaries only. Rows marked "(blog)" come from content-marketing blogs; treat them as planning assumptions, not data.</p>
+<h3 class="h">C1 Route-based condition monitoring → sensor subscription</h3>
+<ul>
+<li>
+<p><strong>Analogues:</strong></p>
+<ul>
+<li>US, funded: AssetWatch, Waites, Augury. They bundle sensors with analysts and charge no upfront fee.</li>
+<li>Tractian: about $90 per sensor plus about $60 per month.</li>
+<li>Vipac (Australia): route plus online monitoring covering vibration, oil and thermography.</li>
+<li>Schaeffler UK: "patrol" routes plus bearing failure analysis.</li>
+<li>Small UK firms: Vibration Diagnostics Ltd, Condition Monitoring Group.</li>
+<li>ABB Ability Smart Sensor is sold through "authorised value providers", a reseller channel open to a UAE SME.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pricing (blog, financialmodelslab):</strong></p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Route visit</td>
+<td>$75–180 per asset</td>
+</tr>
+<tr>
+<td>Site programme</td>
+<td>$3k–12k per month</td>
+</tr>
+<tr>
+<td>AI/sensor monitoring</td>
+<td>$30–100 per asset per month</td>
+</tr>
+<tr>
+<td>Onboarding</td>
+<td>$1k–5k</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Hardware now cheap:</strong></li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Hardware</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Erbessd Phantom Gen 3</td>
+<td>$400 each; 12-sensor kit $5k</td>
+</tr>
+<tr>
+<td>WEG Motor Scan</td>
+<td>$410</td>
+</tr>
+<tr>
+<td>Advantech WISE-2410 (LoRaWAN, ISO 10816 on-device)</td>
+<td>$340</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Verdict:</strong> sound but crowded globally. In the UAE, differentiate on local analysts, response, the heat angle and the spares-lead-time angle.</li>
+</ul>
+<h3 class="h">C3 Compressed-air leak programmes</h3>
+<ul>
+<li>
+<p><strong>Analogues:</strong></p>
+<ul>
+<li>UK SMEs: Direct Air Pipework sells per survey day with 50% off the first day; also Hayley Group and IPE Search.</li>
+<li>Atlas Copco AIRScan: claims 25–30% savings; cases of £48k and £45k per year.</li>
+<li>Monitoring products: Invisible Systems, ifm moneo, EXAIR flowmeters (from $1,343).</li>
+</ul>
+</li>
+<li>
+<p><strong>Economics:</strong></p>
+<ul>
+<li>Quarterly survey: about $2–4k (blog).</li>
+<li>Payback: typically 30–60 days (blog).</li>
+<li>Example finds: 46 leaks worth $15.6k per year; 29 leaks found in 1 hour worth €27.8k per year.</li>
+</ul>
+</li>
+<li>
+<p><strong>Equipment price collapse:</strong> an acoustic camera now costs about $10k.</p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Equipment</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UE Ultraprobe 3000</td>
+<td>$3.5k</td>
+</tr>
+<tr>
+<td>CRYSOUND CRY2620</td>
+<td>$9.5k</td>
+</tr>
+<tr>
+<td>Hikmicro AI56</td>
+<td>$11k (€7.35k in the EU)</td>
+</tr>
+<tr>
+<td>Fluke ii500</td>
+<td>about $12.3k</td>
+</tr>
+<tr>
+<td>Fluke ii900</td>
+<td>$17–23k</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Verdict: stronger.</strong></li>
+</ul>
+<h3 class="h">C7 EC fan retrofit</h3>
+<ul>
+<li>
+<p><strong>Analogues:</strong></p>
+<ul>
+<li>Barkell UK: AHU refurbishment, starting with a free survey.</li>
+<li>Munters: 150 AHUs and about 500 EC fans at Heathrow, saving 30–60%.</li>
+<li>ebm-papst London: about 70% savings, £1,650 per AHU per year, about 2.5-year payback.</li>
+<li>Rosenberg: 2–5-year payback.</li>
+<li><strong>FläktGroup has a UAE page</strong>, so it is an incumbent.</li>
+<li>AirRevive (Florida, SME): hotel FCU refurbishment plus ECM conversion, cutting 51–84% of wattage.</li>
+<li>Counter-example: a Hong Kong office spent HKD 6.4m for an 11-year payback. Whole-building scope kills the payback.</li>
+</ul>
+</li>
+<li>
+<p><strong>ECM module repair:</strong> Genteq opposes component-level repair. Synchronics (India) repairs 29 ebm-papst EC drive variants.</p>
+</li>
+<li>
+<p><strong>Verdict: weaker standalone.</strong> Viable as a hotel FCU niche.</p>
+</li>
+</ul>
+<h3 class="h">C8 Cold-room reliability</h3>
+<ul>
+<li>
+<p><strong>Analogues:</strong></p>
+<ul>
+<li>The SEALS (US franchise; 6 units; $101–147k entry).</li>
+<li>Gasket Guy (US/Canada; 19 locations; royalty $1,200 per month or 6%).</li>
+<li>Owner-operator van-based gasket businesses are listed for sale.</li>
+<li>Gaskets need replacing every 3–12 months.</li>
+</ul>
+</li>
+<li>
+<p><strong>Monitoring is commoditised:</strong></p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Monnit</td>
+<td>sensors from $49</td>
+</tr>
+<tr>
+<td>Checkit (UK)</td>
+<td>under £100 per month</td>
+</tr>
+<tr>
+<td>Lone Star</td>
+<td>$20 per sensor per year</td>
+</tr>
+<tr>
+<td>Danfoss Alsense</td>
+<td>channel through installers</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Verdict: stronger as a service bundle</strong> (sensors + gaskets/curtains/door closers + alarm response + HACCP logs).</li>
+</ul>
+<h3 class="h">C12 Pump and fan efficiency</h3>
+<ul>
+<li>
+<p><strong>Analogues:</strong></p>
+<ul>
+<li>Grundfos Energy Check: free OEM audit; paybacks of 12 and 21 months.</li>
+<li>Riventa (UK SME): thermodynamic in-situ pump testing. Korean water case: £196k per year saved on £346k capex. UK food plant: £20k per year.</li>
+<li>KSB SES.</li>
+</ul>
+</li>
+<li>
+<p><strong>Data:</strong> VFD savings of 10–30%; IE5 saves about 10–12% more than IE3; US utilities pay $500 per pump assessment.</p>
+</li>
+<li>
+<p><strong>Verdict: weaker standalone.</strong> OEMs give audits away. Viable as an add-on to C1, or with a measurement edge.</p>
+</li>
+</ul>
+<h3 class="h">C13 Enclosure climate hardening</h3>
+<ul>
+<li><strong>Analogues:</strong></li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Analogue</th>
+<th>Product</th>
+<th>Price / rating</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EIC Solutions (US)</td>
+<td>ThermoTEC 1,500 BTU thermoelectric unit</td>
+<td>$3,735</td>
+</tr>
+<tr>
+<td>EIC Solutions (US)</td>
+<td>Pre-air-conditioned enclosure</td>
+<td>$1,250</td>
+</tr>
+<tr>
+<td>Laird</td>
+<td>AA-480</td>
+<td>rated to only +55 °C ambient</td>
+</tr>
+<tr>
+<td>Cosmotec (Italy)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>B-R Enclosures (Australia)</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Valen (Australia)</td>
+<td>48 V, 1.5 kW DC air conditioner</td>
+<td>—</td>
+</tr>
+<tr>
+<td>India</td>
+<td>42U IP55 cabinet</td>
+<td>about ₹38k</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>
+<p><strong>Physics:</strong> above about 35 °C ambient, air-to-air heat exchangers cannot cool and can add heat. In UAE summers only active cooling works, and shading and reflective skins come first.</p>
+</li>
+<li>
+<p><strong>Verdict: stronger.</strong> The UAE is a harder market than any of the analogues, so local know-how and local fabrication become a moat.</p>
+</li>
+</ul>
+<h3 class="h">Transferable insights</h3>
+<ol>
+<li>
+<p>Use a cheap first visit to quantify savings, then sell the fix and recurring programme.</p>
+</li>
+<li>
+<p>Hardware is commoditised; response and physical remediation are not.</p>
+</li>
+<li>
+<p>Join OEM channels (ABB, WEG, Erbessd, Danfoss, ebm-papst) instead of building hardware.</p>
+</li>
+<li>
+<p>Narrow, health-code or fast-payback niches support franchisable one-van SMEs.</p>
+</li>
+<li>
+<p>Local climate physics plus local stock during the Hormuz disruption is the moat.</p>
+</li>
+</ol><p class="top"><a href="#top">Back to top</a></p></section><section id="e5" class="part"><p class="eyebrow">Evidence</p><h2>E5 · Analogues: parts &amp; manufacturing</h2><p>Based on 28 web searches, using result summaries only. Items marked [unverified] were added from general knowledge and still need checking.</p>
+<h3 class="h">C2 Scan-to-part + vault</h3>
+<ul>
+<li>
+<p><strong>Cadmore (US, small reverse-engineering shop).</strong></p>
+<ul>
+<li>Scan-to-CAD for a part to be printed: $300–800.</li>
+<li>For CNC or moulding: $800–1,500.</li>
+<li>Scan only: from about $260.</li>
+<li>Turnaround: 8–10 business days.</li>
+<li>Acquires customers through SEO cost guides.</li>
+<li>Source: <a href="https://cadmore.com/blog/reverse-engineering-cost-to-cad" target="_blank" rel="noopener">cadmore.com</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Spare Parts 3D / DigiPART (France/Singapore).</strong> AI triage of spare-parts catalogues. For Whirlpool, <strong>only 7% of 11,000+ SKUs were a profitable fit for printing</strong>.</p>
+</li>
+<li>
+<p><strong>Replique (BASF spin-off).</strong> A digital warehouse for OEMs with 80+ partner printers. Customers include Alstom, Miele, MAN, and Optima (packaging).</p>
+</li>
+<li>
+<p><strong>Wilhelmsen + Ivaldi (maritime).</strong> Parts printed for subscribing vessels "within hours".</p>
+</li>
+<li>
+<p><strong>Deutsche Bahn.</strong> 200,000+ printed parts and 700+ applications, but only about 1,000 models in its digital warehouse (3YOURMIND).</p>
+</li>
+<li>
+<p><strong>Food &amp; beverage proof points:</strong></p>
+<ul>
+<li>Suntory: lead time −83%, cost −70% (Markforged).</li>
+<li>Pet-food plant: a packaging arm broke weekly at £5,000/day of downtime; the printed replacement cost £45.</li>
+</ul>
+</li>
+<li>
+<p><strong>Equipment (now cheap):</strong></p>
+<ul>
+<li>Scanners: Revopoint MetroX about €1.1k; Einstar 2 about €1.4k; EinScan Libre about €25k; Creaform Go!SCAN about €36k.</li>
+<li>Printers:<ul>
+<li>Bambu H2D $1.9–2.7k</li>
+<li>Prusa Core One about €1.4k</li>
+<li>Elegoo Centauri Carbon 2 $449</li>
+<li>MakerBot Method CF $6k</li>
+<li>Formlabs Fuse 1+ (SLS) $25–28k</li>
+</ul>
+</li>
+<li>Materials: PA6-CF HDT up to 186 °C; Onyx 145 °C.</li>
+<li>A capable cell now costs about <strong>$5–8k</strong> (it was $40k+).</li>
+</ul>
+</li>
+<li>
+<p><strong>Lessons:</strong></p>
+<ul>
+<li>In the SME long tail there is no cooperation from OEMs, so the business is per-part reverse engineering plus local printing.</li>
+<li><strong>Start with a paid triage audit.</strong> The vault is a small, high-value set of parts.</li>
+<li>The verticals with traction are packaging/F&amp;B, rail, maritime and appliances.</li>
+</ul>
+</li>
+</ul>
+<h3 class="h">C10 Vacuum casting / soft tooling</h3>
+<ul>
+<li>
+<p><strong>Vacuum casting economics:</strong></p>
+<ul>
+<li>Silicone mould: £200–1,000, about 30 casts per mould.</li>
+<li>Parts: £10–100 each.</li>
+<li>About 10 days, versus 4–8 weeks for steel tooling.</li>
+</ul>
+</li>
+<li>
+<p><strong>Desktop injection moulding:</strong> HoliPress about $3.5k; Galomb $4.5k; APSX-PIM $12.5k.</p>
+</li>
+<li>
+<p><strong>Aluminium tooling:</strong> from about $1.5k, 5 days to 3 weeks, 10k+ shots.</p>
+</li>
+<li>
+<p><strong>Verdict:</strong> project business with no recurring revenue, and Chinese bureaus cap prices. <strong>Fold into C2.</strong></p>
+</li>
+</ul>
+<h3 class="h">C6 Legacy automation continuity</h3>
+<ul>
+<li>
+<p><strong>Essential Automation (UK SME).</strong> Obsolete PLCs and HMIs, with an HMI repair department.</p>
+</li>
+<li>
+<p><strong>Creative IT / Flexa / NJT (HMI repair).</strong></p>
+<ul>
+<li>Repairs typically $450–2,200, 50–70% cheaper than new.</li>
+<li>12-month warranty; free evaluation.</li>
+</ul>
+</li>
+<li>
+<p><strong>Industrial Monitor Direct.</strong> Acquires customers through SEO migration guides. Sells drop-in LCD conversion kits that need no reprogramming.</p>
+</li>
+<li>
+<p><strong>Consolidators:</strong></p>
+<ul>
+<li>EU Automation: about 255 staff, about $25M (estimate).</li>
+<li>Radwell: about $350M; acquired Northern Industrial, a UK repair SME.</li>
+<li><strong>The exit path is a roll-up.</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Verdict: stronger.</strong></p>
+<ul>
+<li>High tickets, low capex, SEO channel.</li>
+<li>The constraint is finding technicians.</li>
+</ul>
+</li>
+</ul>
+<h3 class="h">C5 Laser cleaning</h3>
+<ul>
+<li>
+<p><strong>Analogues:</strong> Project Laser (Perth), Sweep Solution (Melbourne), P-Laser (Belgium, mould cleaning), Laser Photonics Service Partner Network.</p>
+</li>
+<li>
+<p><strong>Eco Laser Solutions (Auckland).</strong></p>
+<ul>
+<li>Clients are mostly food &amp; beverage.</li>
+<li>Owner invested more than $400k and is now <strong>asking $320k for the whole business</strong>.</li>
+<li>Shows that owner-operator scale is limited.</li>
+</ul>
+</li>
+<li>
+<p><strong>Rates:</strong> $100–300/hr or $2.50–9/sq ft.</p>
+</li>
+<li>
+<p><strong>Equipment:</strong></p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Equipment</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chinese continuous-wave 1.5–3 kW</td>
+<td>$3.8–6k (industrial $6–18k)</td>
+</tr>
+<tr>
+<td>Pulsed 300–1000 W</td>
+<td>$5–20k+</td>
+</tr>
+<tr>
+<td>US-branded (Laser Photonics)</td>
+<td>$79–135k</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code>Continuous-wave units handle rust and paint. **Pulsed units are needed for moulds and food equipment.**
+</code></pre>
+<ul>
+<li>
+<p>Laser cleaning is Class 4: requires a laser safety officer and fume extraction.</p>
+</li>
+<li>
+<p><strong>Verdict: medium.</strong> Low barriers to entry, so it needs a niche plus contracts.</p>
+</li>
+</ul>
+<h3 class="h">C4 Leak detection + shutoff</h3>
+<ul>
+<li>
+<p><strong>Water Intelligence / American Leak Detection.</strong></p>
+<ul>
+<li>FY2025 revenue $90.4M; pre-tax profit $6.8M.</li>
+<li>Contracts with 6 US insurers; insurance-channel franchise sales +45%.</li>
+<li>Franchise entry cost $77–260k.</li>
+</ul>
+</li>
+<li>
+<p><strong>LeakBot / Ondo.</strong></p>
+<ul>
+<li>Insurers pay $5/month per home.</li>
+<li>Claims cost −70%, frequency −39%, $146 per policy per year.</li>
+</ul>
+</li>
+<li>
+<p><strong>Flo by Moen.</strong> Insurer subsidies; about $25/month subscription; −96% water-damage claim events (as cited).</p>
+</li>
+<li>
+<p><strong>UK firms:</strong> ADI, LDS (social housing), Leak Detective (11 franchise territories).</p>
+</li>
+<li>
+<p><strong>Job pricing:</strong></p>
+<ul>
+<li>Australia: AUD 150–900 per method.</li>
+<li>UK: about £900 for a report; trace-and-access £1,590+VAT; a 2-day specialist job £4,380.</li>
+</ul>
+</li>
+<li>
+<p><strong>Lesson: the third-party payer drives scale.</strong> In the UAE that means developers and community managers or property managers first, insurers later.</p>
+</li>
+</ul>
+<h3 class="h">C9 Kitchen parts + filtration</h3>
+<ul>
+<li>
+<p><strong>Parts Town.</strong></p>
+<ul>
+<li>Founded in 1987 with 5 people.</li>
+<li>Revenue $2.4B (2023E); more than 70% digital; 28 acquisitions.</li>
+<li>AI part identification: PartPredictor and SnapScan (reads data plates).</li>
+<li>Bought First Choice and Commercial Catering Spares (UK).</li>
+</ul>
+</li>
+<li>
+<p><strong>Filters:</strong></p>
+<ul>
+<li>Rational system $975; refill $550.</li>
+<li>Brita Purity C300 Steam £169 (7,907 L).</li>
+<li>BWT cartridges 2,500–8,750 L.</li>
+</ul>
+</li>
+<li>
+<p><strong>Verdict: a broad parts shop is a scale game.</strong> The viable wedge is <strong>filtration-as-a-service plus WhatsApp parts quoting from a data-plate photo</strong>.</p>
+</li>
+</ul>
+<h3 class="h">Insights</h3>
+<ol>
+<li>
+<p>Find who pays to avoid the loss.</p>
+</li>
+<li>
+<p>Triage before production.</p>
+</li>
+<li>
+<p>Capex has collapsed, but know-how and trust have not.</p>
+</li>
+<li>
+<p>SEO and part-number content acquire customers.</p>
+</li>
+<li>
+<p>Roll-up exits exist (Radwell, Parts Town).</p>
+</li>
+</ol><p class="top"><a href="#top">Back to top</a></p></section><section id="e6" class="part"><p class="eyebrow">Evidence</p><h2>E6 · UAE deep dive: commercial</h2><p>Method: 30 web searches; result summaries only. [I] marks inference. [weak] marks data from a low-quality aggregator.</p>
+<h3 class="h">Customer base</h3>
+<ul>
+<li>
+<p><strong>Dubai food establishments: 29,303</strong> (<a href="https://gulfnews.com/amp/story/business%2Fretail%2Fmore-than-10-new-food-businesses-are-launching-in-dubai-every-day-1.500611405" target="_blank" rel="noopener">Gulf News</a>).</p>
+<ul>
+<li>About 10.5 new outlets open per day.</li>
+<li>34,700 Dubai Municipality (DM) inspections in H1 2025 (<a href="https://www.dm.gov.ae/over-34000-food-inspections-conducted-in-first-half-of-2025/" target="_blank" rel="noopener">DM</a>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Dubai hotels: 770 establishments, 158,700 rooms.</strong> Occupancy 81%, average daily rate (ADR) AED 746 (<a href="https://cavendishmaxwell.com/news/dubai-hotel-market-expands-to-158700-rooms-as-luxury-segment-dominates" target="_blank" rel="noopener">Cavendish Maxwell</a>).</p>
+</li>
+<li>
+<p><strong>Dubai housing stock: about 1.02M units.</strong> 9,382 villas were delivered in 2025. [I] Villas and townhouses total roughly 150–200k.</p>
+</li>
+</ul>
+<h3 class="h">J1 Cold-room reliability bundle — ADVANCE (conditional)</h3>
+<ul>
+<li>
+<p><strong>Competitors split into two layers, and nobody bundles them:</strong></p>
+<ul>
+<li>Sensors and software: Kelsius (UAE), Testo, global SaaS vendors.</li>
+<li>Repair: classified-ad shops such as Al Asrar, Mana and Scholar AC; yellowpages lists 64 cold-storage businesses. FAJ and Farnek run maintenance contracts (AMCs).</li>
+<li>No provider combines sensors, gasket and door service, and alarm response.</li>
+</ul>
+</li>
+<li>
+<p><strong>The regulatory hook is records, not sensors.</strong></p>
+<ul>
+<li>The Dubai Food Code requires chilled storage at ≤5 °C, frozen at ≤-18 °C, and daily temperature logs. Paper logs are allowed.</li>
+<li>Abu Dhabi (ADAFSA) closed 21 establishments in 2024. Missing fridge and freezer temperature records was among the repeated violations (<a href="https://www.gulftoday.ae/News/2024/09/28/Abu-Dhabi-shuts-down-21-food-establishments-since-beginning-of-2024" target="_blank" rel="noopener">Gulf Today</a>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Risks:</strong></p>
+<ul>
+<li>Paper logs are enough to comply, so sensors are optional.</li>
+<li>Gasket work invites price wars.</li>
+<li>Facilities-management firms may bundle the service themselves.</li>
+<li>Small restaurants churn.</li>
+</ul>
+</li>
+<li>
+<p><strong>Target first:</strong> hotels, central kitchens, food distributors, and chains with 5–20 sites.</p>
+</li>
+</ul>
+<h3 class="h">J2 Leak pinpoint + shutoff — CONDITIONAL (drop the monitoring subscription)</h3>
+<ul>
+<li>
+<p><strong>DEWA's High Water Usage Alert is free.</strong> It fires after 48 hours of abnormal use, and DEWA "may arrange technicians" (<a href="https://dewa.gov.ae/en/consumer/consumption-management/high-water-usage-alert" target="_blank" rel="noopener">DEWA</a>). This removes the value of a paid monitoring subscription.</p>
+</li>
+<li>
+<p><strong>Indicative prices [weak]:</strong> leak check AED 250; full test up to AED 1,000; villa audit AED 500–1,000.</p>
+</li>
+<li>
+<p><strong>Emaar channels:</strong></p>
+<ul>
+<li>A "Premium Service Providers" booklet is distributed to residents.</li>
+<li>The defect liability period is 1 year, after which repairs fall to the owner.</li>
+</ul>
+</li>
+<li>
+<p><strong>Insurance does not help:</strong> UAE home insurance covers sudden escapes of water but excludes gradual leaks, so insurers have little incentive to pay for detection.</p>
+</li>
+<li>
+<p><strong>Risks:</strong></p>
+<ul>
+<li>Tenants pay the bills but landlords own the pipes, which splits the incentive.</li>
+<li>Plumbers set a low price floor.</li>
+<li>Developers are slow buyers.</li>
+</ul>
+</li>
+<li>
+<p><strong>What remains viable:</strong> premium pinpointing for people who have just received a DEWA alert, plus shutoff-valve installation, plus places on developer and property-manager approved-provider lists.</p>
+</li>
+</ul>
+<h3 class="h">J3 Pulsed laser cleaning — KILL / PARK</h3>
+<ul>
+<li>
+<p>No laser-cleaning service provider surfaced in the UAE. Corrotherm (the cleanLASER distributor) uses the technology only in-house.</p>
+</li>
+<li>
+<p>No UAE demand signal was found for bakeries, moulds or heritage work.</p>
+</li>
+<li>
+<p>Chinese continuous-wave lasers sell for $3.1–4.9k, so cheap competitors would undercut any service.</p>
+</li>
+<li>
+<p>Dry-ice cleaning is entrenched.</p>
+</li>
+<li>
+<p>Food sites would need hygiene validation, and marine work needs vendor qualification.</p>
+</li>
+</ul>
+<h3 class="h">J4 Filtration-as-a-service — merge into J1</h3>
+<ul>
+<li>
+<p>Ekuep (UAE/KSA) sells Everpure and 3M filters online, so filters are already a commodity.</p>
+</li>
+<li>
+<p>OEM dealers control service contracts and warranties.</p>
+</li>
+<li>
+<p>Rational's CareControl lets its ovens run without filters, which weakens the combi-oven angle.</p>
+</li>
+<li>
+<p>Ice machines and espresso machines are the better target.</p>
+</li>
+</ul>
+<h3 class="h">J5 Hotel FCU EC conversion — CONDITIONAL (subcontractor role)</h3>
+<ul>
+<li>
+<p><strong>AHU-level EC retrofit is already done locally:</strong> Qey + ebm-papst + Taka at Swiss Tower, 26 fans, about 60% saving (<a href="https://www.ebmpapst.com/ae/en/newsroom/projects/sky-high-savings-ahu-retrofit.html" target="_blank" rel="noopener">ebm-papst</a>).</p>
+</li>
+<li>
+<p><strong>Other players:</strong></p>
+<ul>
+<li>Etihad ESCO: AED 31.6M Dubai Golf deal; first ESPC completed.</li>
+<li>Quantum Eurostar: ESCO for hospitality.</li>
+<li>FläktGroup.</li>
+</ul>
+</li>
+<li>
+<p><strong>The gap:</strong> no FCU-level refurbishment product was found in the UAE.</p>
+</li>
+<li>
+<p><strong>Risks:</strong></p>
+<ul>
+<li>Room downtime: at 81% occupancy and AED 746 ADR, every room out of service is expensive.</li>
+<li>Split between hotel owner and operator.</li>
+<li>ESCO accreditation.</li>
+<li>Payment terms of 90–120 days [I].</li>
+</ul>
+</li>
+<li>
+<p><strong>Recommended role:</strong> FCU specialist subcontractor to ESCOs and FM firms. Start with a 20-room metered pilot.</p>
+</li>
+</ul>
+<h3 class="h">Ranking</h3>
+<p>J1 (+J4) &gt; J5 (sub) &gt; J2 (premium pinpoint) &gt; J3 (kill)</p><p class="top"><a href="#top">Back to top</a></p></section><section id="e7" class="part"><p class="eyebrow">Evidence</p><h2>E7 · UAE deep dive: industrial</h2><p><strong>How this was gathered:</strong> 30 web searches; only result summaries were available. <strong>[INF]</strong> marks inference rather than sourced fact.</p>
+<h3 class="h">Facts that apply across all five ideas</h3>
+<ul>
+<li>
+<p><strong>Food &amp; beverage manufacturing:</strong> more than 2,000 companies, about 25% of manufacturing GDP (<a href="https://mediaoffice.ae/en/news/2025/november/04-11/mansoor-bin-mohammed-inaugurates-11th-edition-of-gulfood-manufacturing" target="_blank" rel="noopener">Dubai Media Office</a>).</p>
+</li>
+<li>
+<p><strong>Rubber and plastics converters:</strong> 569 (<a href="https://moiat.gov.ae/en/make-it-in-the-emirates/sectors/rubber-and-plastics" target="_blank" rel="noopener">MoIAT</a>).</p>
+</li>
+<li>
+<p><strong>Bottled water:</strong> a few dozen plants [INF], all under Emirates Quality Mark audits. Large groups dominate: Mai Dubai, Agthia, Nestlé, Berain.</p>
+</li>
+<li>
+<p><strong>Payment terms (Atradius 2025):</strong> average 47 days. 58% of credit sales are paid late, and 8% of overdue invoices become bad debt. <strong>This argues for deposits and subscriptions billed in advance.</strong></p>
+</li>
+<li>
+<p><strong>Salaries:</strong></p>
+</li>
+</ul>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Pay</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Automation/instrument technician, Sharjah</td>
+<td>about AED 4.2–4.4k/month + accommodation</td>
+</tr>
+<tr>
+<td>PLC service engineer</td>
+<td>about AED 105k/year</td>
+</tr>
+<tr>
+<td>Automation engineer</td>
+<td>AED 14.9–29.2k/month (80% band)</td>
+</tr>
+<tr>
+<td>Condition-monitoring inspector, Saudi Arabia</td>
+<td>SAR 5.0–5.5k/month</td>
+</tr>
+<tr>
+<td>Certified Cat II vibration analyst</td>
+<td>about AED 8–15k/month [INF]</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Licensing [INF]:</strong> on-site work at mainland plants generally needs a mainland (DED) licence.</li>
+</ul>
+<h3 class="h">I1 Scan-to-part (F&amp;B, packaging, plastics, marine) — CONDITIONAL</h3>
+<ul>
+<li>
+<p><strong>Competitors:</strong></p>
+<ul>
+<li>UAE: Orbit3D, LayerX (DIP), Paradigm3D/D2M, Iris 3D, Sinterex, IRPR 3D.</li>
+<li>Hubs gives instant online quotes in Dubai, so <strong>printing is a commodity</strong>.</li>
+<li>The real substitute is machined UHMW/POM from local shops and OEM change-part services [INF].</li>
+</ul>
+</li>
+<li>
+<p><strong>Key risk — food contact:</strong> PA-CF and ASA are generally not food-contact certified. Start with non-contact parts (guards, brackets, guides away from product) or certified PA12.</p>
+</li>
+<li>
+<p><strong>Customer base:</strong> about 300–600 plants with high-speed lines [INF].</p>
+</li>
+<li>
+<p><strong>Field test:</strong> audit 10 plants and count parts with OEM lead times over 3 weeks or costs over AED 2k.</p>
+</li>
+</ul>
+<h3 class="h">I2 Reliability route — CONDITIONAL, low priority</h3>
+<ul>
+<li>
+<p><strong>Competitors:</strong></p>
+<ul>
+<li><strong>Vibrant Electromechanical Services:</strong> vibration, balancing, alignment, thermography, root-cause analysis, and Mobius Cat I–IV training. A serious incumbent.</li>
+<li><strong>Pruftechnik (Fluke) UAE services.</strong></li>
+<li><strong>RMT Reliability:</strong> Sensoteq wireless distributor since August 2024. Already occupies the sensor step.</li>
+<li>Technomax, Beckhoff, SEW.</li>
+</ul>
+</li>
+<li>
+<p><strong>Demand signals are thin:</strong> only 9 vibration-analysis job listings in the UAE on NaukriGulf.</p>
+</li>
+<li>
+<p><strong>Risks:</strong> SMEs run equipment to failure, and buyers ask for ISO 18436 certification.</p>
+</li>
+<li>
+<p><strong>Recommendation:</strong> fold into I3 visits.</p>
+</li>
+</ul>
+<h3 class="h">I3 Compressed-air programme — ADVANCE (lead offer)</h3>
+<ul>
+<li>
+<p><strong>Competitors:</strong></p>
+<ul>
+<li>OEM audits: <strong>ELGi UAE</strong> (flow, pressure, leaks, dew point, financial estimates) and Atlas Copco AIRScan.</li>
+<li>Testo sells DIY sensors.</li>
+<li><strong>No independent survey → repair → re-survey provider was found.</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Savings arithmetic [INF]:</strong> 7.5 kW of leaks × 6,000 h ≈ 45 MWh, worth about <strong>AED 13–20k/yr per mid-size plant</strong> at AED 0.30–0.44/kWh.</p>
+</li>
+<li>
+<p><strong>Risks:</strong></p>
+<ul>
+<li>Free OEM audits cap what a survey can be priced at.</li>
+<li>Plants below about 30 kW of compressor capacity have weak ROI.</li>
+<li>Repairs need shutdown windows.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pricing approach:</strong> a recurring programme with repairs included, or gain-share.</p>
+</li>
+</ul>
+<h3 class="h">I4 Legacy automation continuity — CONDITIONAL, leaning ADVANCE</h3>
+<ul>
+<li>
+<p><strong>Competitors:</strong></p>
+<ul>
+<li>Local repairers: WEDIAN (Ajman, reachable on WhatsApp), Automat, CNC Experts.</li>
+<li>Plcge Automation (DSO; parts trader).</li>
+<li>Traders in Deira and Sharjah.</li>
+<li>Global obsolete-parts sellers and Indian repairers [INF].</li>
+</ul>
+</li>
+<li>
+<p><strong>Demand:</strong> break-fix demand is proven. Plants built in 2000–2012 still run S7-300/400, SLC500 and PanelView [INF].</p>
+</li>
+<li>
+<p><strong>Risks:</strong></p>
+<ul>
+<li>Counterfeit parts and the liability that comes with them.</li>
+<li>Licensing of HMI software.</li>
+<li>Price shopping on WhatsApp.</li>
+<li>Proactive audits are hard to sell.</li>
+</ul>
+</li>
+<li>
+<p><strong>Where to differentiate:</strong> obsolescence audits, migration kits, SEO capture. Repair alone is crowded.</p>
+</li>
+</ul>
+<h3 class="h">I5 Enclosure hardening — CONDITIONAL; pivot or kill</h3>
+<ul>
+<li>
+<p><strong>Heat evidence:</strong></p>
+<ul>
+<li>Qatar (HBKU) study: an EV fast charger in summer lost up to 35–40 kW, and charging time went from 86 to 169 minutes (<a href="https://elmi.hbku.edu.qa/en/publications/performance-assessment-of-an-electric-vehicle-fast-charger-in-hot/" target="_blank" rel="noopener">HBKU</a>).</li>
+<li>UAE: up to 12% efficiency loss on days above 48 °C.</li>
+</ul>
+</li>
+<li>
+<p><strong>Asset base:</strong> Dubai had 2,223 EV charge points by Q1 2026, with a target of 10,000 by December 2026.</p>
+</li>
+<li>
+<p><strong>Risks:</strong></p>
+<ul>
+<li>Buyers are concentrated and gated (RTA, Police, DEWA, e&amp;/du) and need vendor registration.</li>
+<li>CCTV work needs a <strong>SIRA licence</strong>.</li>
+<li>Possible TDRA approval [INF].</li>
+<li>Modifying enclosures can void OEM warranties.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pivot:</strong> private charge-point operators, solar O&amp;M, parking and gate operators, and FM firms, with OEM-approved add-ons.</p>
+</li>
+</ul><p class="top"><a href="#top">Back to top</a></p></section><section id="appendix" class="part"><p class="eyebrow">Appendix</p><h2>All 182 hypotheses</h2><p>This is an audit trail, not a reading list. Each line is a hypothesis; ✗ means killed at first screen, with a short reason. Survivors move to the top-20 in <a href="#phase1">Phase 1 · UAE pain map</a>. Evidence codes refer to <code>evidence/E1–E3</code>.</p>
+<h3 class="h">A. Spare parts, reverse engineering, digital manufacturing (22)</h3>
+<ol>
+<li>
+<p>Scan → CAD → part service for broken or obsolete non-critical SME parts → <strong>survivor (C2)</strong></p>
+</li>
+<li>
+<p>Digital spare-part vault (CAD + material spec + re-order) for FM firms and SME plants → merged into C2</p>
+</li>
+<li>
+<p>Enterprise digital inventory for oil &amp; gas ✗ Immensa already owns it (ADNOC Gas, DFDF-funded)</p>
+</li>
+<li>
+<p>Metal AM bureau ✗ capex $500k+; Sinterex, FTI, Immensa already present</p>
+</li>
+<li>
+<p>FDM/SLA print bureau ✗ crowded commodity, AED 0.50/g</p>
+</li>
+<li>
+<p>Vacuum or urethane casting micro-factory (10–500 parts) → <strong>survivor (C10)</strong></p>
+</li>
+<li>
+<p>Aluminium soft-tooling + low-MOQ injection → capability ladder rung after C10</p>
+</li>
+<li>
+<p>Full injection-moulding factory ✗ no UAE advantage over China except urgency, low MOQ or ICV, and those favour 6 and 7</p>
+</li>
+<li>
+<p>Pipe and flange protectors, caps and plugs moulding ✗ high-volume commodity; China and India win on landed cost</p>
+</li>
+<li>
+<p>Irrigation fittings moulding ✗ commodity</p>
+</li>
+<li>
+<p>Industrial knobs, handles and clips (replacement) → folded into C2</p>
+</li>
+<li>
+<p>Obsolete appliance and equipment plastic housings → folded into C2</p>
+</li>
+<li>
+<p>Marine plastic and rubber obsolete parts → C2 vertical</p>
+</li>
+<li>
+<p>Commercial-kitchen obsolete plastic parts (knobs, door latches, gasket profiles) → C2 + C9</p>
+</li>
+<li>
+<p>Gasket and seal cutting (CNC knife / waterjet) on demand → tier-2 subcontract variant of C15</p>
+</li>
+<li>
+<p>Hydraulic hose van ✗ well run by Al-Bahar and Kays</p>
+</li>
+<li>
+<p>Online CNC/fab quoting broker → <strong>survivor (C16)</strong></p>
+</li>
+<li>
+<p>Tier-2 precision machining for Local+ manufacturers → <strong>survivor (C15)</strong></p>
+</li>
+<li>
+<p>Turbine-part reverse engineering for ADNOC ✗ qualification-heavy, FTI and Immensa present (revisit as a partner)</p>
+</li>
+<li>
+<p>3D-printed jigs and fixtures for factories → C2 add-on</p>
+</li>
+<li>
+<p>Replacement conveyor and packaging-line wear parts (UHMW guides, star wheels, change parts) → C2 vertical (strong: food and bottling)</p>
+</li>
+<li>
+<p>Construction-equipment cab and trim plastics ✗ fragmented, low ticket</p>
+</li>
+</ol>
+<h3 class="h">B. Industrial electronics and obsolescence (15)</h3>
+<ol start="23">
+<li>
+<p>HMI touchscreen and display replacement service (digitiser swap) → <strong>survivor (C6)</strong></p>
+</li>
+<li>
+<p>HMI emulation / panel migration kits (old panel → new HMI in the same cut-out) → C6</p>
+</li>
+<li>
+<p>PLC legacy-to-modern migration packages for SMEs → C6</p>
+</li>
+<li>
+<p>Stocked refurbished obsolete PLC/drive spares (GCC hub) → C6</p>
+</li>
+<li>
+<p>Component-level drive repair lab ✗ Automat, WEDIAN and others already present; thin margins</p>
+</li>
+<li>
+<p>Repair "front end" (fixed evaluation fee, SLA, pickup) subcontracting to labs → C6</p>
+</li>
+<li>
+<p>ECM/EC fan module repair → C7</p>
+</li>
+<li>
+<p>Control-board repair for commercial kitchens (Rational, etc.) → C9 option</p>
+</li>
+<li>
+<p>Gate and barrier controller repair ✗ low ticket, dealers cover it</p>
+</li>
+<li>
+<p>Elevator controller retrofit ✗ safety-critical, OEM-locked</p>
+</li>
+<li>
+<p>BMS de-locking / open-protocol re-integration for orphaned buildings → <strong>survivor (C18)</strong></p>
+</li>
+<li>
+<p>Medical equipment board repair ✗ medical regulation (flagged)</p>
+</li>
+<li>
+<p>UPS battery and board refurbishment ✗ crowded with UPS vendors</p>
+</li>
+<li>
+<p>Solar inverter board repair → C14 option</p>
+</li>
+<li>
+<p>EV charger board and module repair → C19</p>
+</li>
+</ol>
+<h3 class="h">C. Condition monitoring and reliability services (15)</h3>
+<ol start="38">
+<li>
+<p>Route-based vibration + IR + ultrasound for SME plants → <strong>survivor (C1)</strong></p>
+</li>
+<li>
+<p>Wireless vibration/temperature sensor subscription (Tractian-style) → C1 ladder</p>
+</li>
+<li>
+<p>Thermography of electrical panels for insurance and FM → C1 add-on (strong FM entry)</p>
+</li>
+<li>
+<p>Oil analysis programme reseller → C1 add-on</p>
+</li>
+<li>
+<p>Motor current signature analysis → C1 ladder</p>
+</li>
+<li>
+<p>Laser shaft alignment and balancing service → C1 add-on</p>
+</li>
+<li>
+<p>Cooling-tower and fan balancing → C1 add-on</p>
+</li>
+<li>
+<p>Steam-trap surveys ✗ little steam in UAE SMEs (except laundries and food)</p>
+</li>
+<li>
+<p>Bearing failure analysis → C1</p>
+</li>
+<li>
+<p>Gearbox inspection with borescopes → C1</p>
+</li>
+<li>
+<p>Pump performance testing (in-situ) → C12 merge</p>
+</li>
+<li>
+<p>Transformer oil and DGA testing ✗ utility-dominated</p>
+</li>
+<li>
+<p>Partial-discharge testing ✗ specialist and enterprise</p>
+</li>
+<li>
+<p>Reliability training for SME maintenance teams → C1 add-on</p>
+</li>
+<li>
+<p>Electronic CMMS + sensor bundle for SMEs → C1 software layer</p>
+</li>
+</ol>
+<h3 class="h">D. Energy efficiency retrofits (20)</h3>
+<ol start="53">
+<li>
+<p>Compressed-air leak survey + fix + re-survey programme → <strong>survivor (C3)</strong></p>
+</li>
+<li>
+<p>Compressor-room optimisation (sequencing, pressure drop, heat recovery) → C3 ladder</p>
+</li>
+<li>
+<p>VFD on pumps and fans packages → C12</p>
+</li>
+<li>
+<p>IE3/IE4 motor swap packages (UAE.S 5051) → C12</p>
+</li>
+<li>
+<p>EC fan retrofit for AHUs/FCUs → <strong>survivor (C7)</strong></p>
+</li>
+<li>
+<p>Building ESCO ✗ needs balance sheet; crowded (Etihad ESCO, Enova, Siemens, etc.)</p>
+</li>
+<li>
+<p>M&amp;V / sub-metering subcontractor to ESCOs → <strong>survivor (C20)</strong></p>
+</li>
+<li>
+<p>Power-factor correction ✗ commodity, utility tariffs have little penalty for SMEs (unverified)</p>
+</li>
+<li>
+<p>Lighting controls retrofit ✗ LED already largely done; crowded</p>
+</li>
+<li>
+<p>Warehouse high-speed doors + air curtains → C8 cold variant only</p>
+</li>
+<li>
+<p>Cold-store door, curtain and gasket retrofit → C8</p>
+</li>
+<li>
+<p>Chiller plant optimisation software ✗ enterprise vendors; needs a large site</p>
+</li>
+<li>
+<p>Hotel guest-room energy management ✗ crowded with integrators</p>
+</li>
+<li>
+<p>Kitchen ventilation demand control (DCKV) → C9 adjacency (possible)</p>
+</li>
+<li>
+<p>Pool pump VFD retrofits (villas and hotels) → C4 adjacency</p>
+</li>
+<li>
+<p>Solar water-heater revival ✗ low ticket</p>
+</li>
+<li>
+<p>Thermal insulation defect survey (IR) → C1 / C17 adjacency</p>
+</li>
+<li>
+<p>Refrigeration condenser shading and adiabatic pre-cooling retrofit → C8</p>
+</li>
+<li>
+<p>Industrial heat recovery from compressors → C3 ladder</p>
+</li>
+<li>
+<p>Energy monitoring dashboards for SME factories (CT clamps) → C1 / C12 software layer</p>
+</li>
+</ol>
+<h3 class="h">E. Water (18)</h3>
+<ol start="73">
+<li>
+<p>Precision leak location (acoustic, thermal, tracer gas) after a DEWA alert → <strong>survivor (C4)</strong></p>
+</li>
+<li>
+<p>Smart auto-shutoff valve install + monitoring subscription → C4</p>
+</li>
+<li>
+<p>Underground tank leak testing and relining (villas) → C4</p>
+</li>
+<li>
+<p>Irrigation leak and controller optimisation for compounds → C4 B2B ladder</p>
+</li>
+<li>
+<p>Pool covers for evaporation control ✗ low demand pull (no owner pain found); retail product</p>
+</li>
+<li>
+<p>Pool leak detection → C4 add-on</p>
+</li>
+<li>
+<p>AC condensate recovery kits for buildings → ✗ for now; Estidama makes it optional; payback weak at subsidised tariffs (keep for C18/C20 later)</p>
+</li>
+<li>
+<p>Greywater for villas ✗ regulation and maintenance burden, low demand pull</p>
+</li>
+<li>
+<p>RO membrane cleaning and autopsy service for small RO plants (hotels, factories) → <strong>survivor (C11b)</strong>, merged with C11</p>
+</li>
+<li>
+<p>Automatic chemical dosing + remote monitoring for small RO and cooling systems → C11</p>
+</li>
+<li>
+<p>Cooling tower water treatment ✗ crowded with chemical vendors (unverified)</p>
+</li>
+<li>
+<p>Water-quality IoT sensors for compounds ✗ weak pull</p>
+</li>
+<li>
+<p>Smart water sub-metering for master communities → C20</p>
+</li>
+<li>
+<p>Hard-water conditioners for villas ✗ crowded B2C with dubious products</p>
+</li>
+<li>
+<p>Industrial water reuse skids ✗ capex and engineering heavy</p>
+</li>
+<li>
+<p>Desalination support spares ✗ utility-dominated</p>
+</li>
+<li>
+<p>Leak detection in district cooling and chilled-water lines → C18 adjacency</p>
+</li>
+<li>
+<p>Rainwater/flash-flood drainage pump maintenance ✗ seasonal and municipal</p>
+</li>
+</ol>
+<h3 class="h">F. HVAC, refrigeration, cold chain (18)</h3>
+<ol start="91">
+<li>
+<p>Cold-room reliability package (monitoring + door/gasket + condenser care + alarm response) → <strong>survivor (C8)</strong></p>
+</li>
+<li>
+<p>HACCP monitoring SaaS reseller only ✗ product exists (Kelsius); low margin without service</p>
+</li>
+<li>
+<p>Ice-machine heat retrofits (remote or water-cooled condensers) → C8 / C9 adjacency</p>
+</li>
+<li>
+<p>Coastal coil corrosion protection (on-site e-coating) → <strong>survivor (C17)</strong></p>
+</li>
+<li>
+<p>AC maintenance for residents ✗ crowded, price war, landlord disputes</p>
+</li>
+<li>
+<p>Villa AC replacement upgrade ✗ crowded</p>
+</li>
+<li>
+<p>FCU condensate-tray anti-algae and overflow sensors → C4 / C17 adjacency</p>
+</li>
+<li>
+<p>District-cooling energy transfer station (ETS) and secondary-loop optimisation → C18</p>
+</li>
+<li>
+<p>BMS de-locking → C18</p>
+</li>
+<li>
+<p>Refrigerated delivery box thermal retrofits ✗ platform-owned fleets</p>
+</li>
+<li>
+<p>Refrigerated truck reefer telematics ✗ crowded (fleet telematics firms)</p>
+</li>
+<li>
+<p>Pharmacy fridge validation and mapping → C8 vertical (DHA)</p>
+</li>
+<li>
+<p>Kitchen exhaust hood cleaning ✗ crowded, licensed</p>
+</li>
+<li>
+<p>Grease-trap servicing ✗ crowded, licensed waste</p>
+</li>
+<li>
+<p>Chiller tube cleaning and eddy-current testing → C1 / C18 adjacency</p>
+</li>
+<li>
+<p>Data-centre CRAH/CRAC third-party maintenance ✗ OEM-locked and certified</p>
+</li>
+<li>
+<p>Liquid-cooling CDU service for data centres ✗ too early, OEM-led</p>
+</li>
+<li>
+<p>Mosque and school HVAC scheduling controls ✗ procurement heavy</p>
+</li>
+</ol>
+<h3 class="h">G. Extreme-climate protection (12)</h3>
+<ol start="109">
+<li>
+<p>Outdoor electronics enclosure thermal and dust hardening (fan-filter alternatives, heat exchangers, sun shields) → <strong>survivor (C13)</strong></p>
+</li>
+<li>
+<p>Smart enclosure monitoring sensor (temperature, humidity, door, dust) → C13</p>
+</li>
+<li>
+<p>Connector and cable protection for solar (MC4 audits) → C14</p>
+</li>
+<li>
+<p>Anti-corrosion coatings for coastal equipment → C17</p>
+</li>
+<li>
+<p>Sand filtration for HVAC intakes ✗ crowded filter traders</p>
+</li>
+<li>
+<p>Battery cabinet cooling for telecom and solar storage → C13</p>
+</li>
+<li>
+<p>UV-resistant replacement plastic parts (ASA/PC) → C2</p>
+</li>
+<li>
+<p>CCTV and camera housing cooling → C13</p>
+</li>
+<li>
+<p>Marine corrosion monitoring ✗ niche, enterprise</p>
+</li>
+<li>
+<p>Gate motor heat protection kits ✗ low ticket</p>
+</li>
+<li>
+<p>Car-park EV charger shading/cooling ✗ owner-led capex</p>
+</li>
+<li>
+<p>Hard-water scale prevention for commercial kitchens (filtration for combi ovens, dishwashers, coffee machines) → C9 consumable ladder (strong recurring)</p>
+</li>
+</ol>
+<h3 class="h">H. Machine-enabled field services (15)</h3>
+<ol start="121">
+<li>
+<p>Mobile laser cleaning → <strong>survivor (C5)</strong></p>
+</li>
+<li>
+<p>Dry-ice blasting ✗ several providers exist; consumable logistics</p>
+</li>
+<li>
+<p>Mobile line boring and on-site machining → <strong>survivor (C21, reserve)</strong></p>
+</li>
+<li>
+<p>Pipe inspection crawlers (drains, building risers) ✗ crowded with drain companies</p>
+</li>
+<li>
+<p>Industrial drone thermography (rooftops, solar, facades) → C14 / C1 add-on</p>
+</li>
+<li>
+<p>3D laser scanning of plant rooms for retrofit design (as-built) → C2 ladder</p>
+</li>
+<li>
+<p>Thermal imaging building envelope audits → C1 add-on</p>
+</li>
+<li>
+<p>Industrial vacuum and tank cleaning ✗ licensed waste, crowded</p>
+</li>
+<li>
+<p>Hydro-jetting ✗ crowded</p>
+</li>
+<li>
+<p>Portable balancing → C1</p>
+</li>
+<li>
+<p>On-site valve testing bench (mobile) → C11</p>
+</li>
+<li>
+<p>Ultrasonic thickness / NDT for SMEs ✗ NDT firms crowded (oil &amp; gas)</p>
+</li>
+<li>
+<p>Mobile calibration van for pressure and temperature instruments → reserve (C22)</p>
+</li>
+<li>
+<p>Industrial floor repair and resurfacing ✗ construction trade</p>
+</li>
+<li>
+<p>Specialty welding (cast iron, aluminium repair) → reserve, folds into C21</p>
+</li>
+</ol>
+<h3 class="h">I. Solar, EV, battery (12)</h3>
+<ol start="136">
+<li>
+<p>Orphaned C&amp;I and villa solar diagnostics O&amp;M → <strong>survivor (C14)</strong></p>
+</li>
+<li>
+<p>Solar cleaning ✗ commoditised</p>
+</li>
+<li>
+<p>Inverter replacement and upgrade service → C14</p>
+</li>
+<li>
+<p>EV charger O&amp;M contracts for compounds and towers → <strong>survivor (C19)</strong></p>
+</li>
+<li>
+<p>EV charger install ✗ crowded, licensed</p>
+</li>
+<li>
+<p>Battery storage retrofits for villas ✗ early, weak economics at subsidised tariffs</p>
+</li>
+<li>
+<p>E-bike battery refurbishment for delivery fleets ✗ platform and battery-swap operator owned</p>
+</li>
+<li>
+<p>Golf-cart and utility-vehicle battery conversions (lead → LiFePO4) → reserve (C23)</p>
+</li>
+<li>
+<p>Forklift battery refurbishment and lithium conversion → reserve, merged with C23</p>
+</li>
+<li>
+<p>Solar pump systems for farms ✗ small farm market, low ability to pay</p>
+</li>
+<li>
+<p>MC4 and connector failure audits → C14</p>
+</li>
+<li>
+<p>Solar plus generator hybrid controllers for remote sites ✗ niche</p>
+</li>
+</ol>
+<h3 class="h">J. Local assembly, import + value-add, fabrication (15)</h3>
+<ol start="148">
+<li>
+<p>Locally assembled sensor kits (imported sensor + local enclosure + config) → C1 / C13 / C8 hardware layer</p>
+</li>
+<li>
+<p>Control-panel building for SME machines ✗ crowded with panel builders (Verger and others)</p>
+</li>
+<li>
+<p>Data-centre cable containment and fabrication ✗ EPC-captured; certified suppliers</p>
+</li>
+<li>
+<p>Locally assembled IoT gateways (LoRaWAN) → shared hardware layer</p>
+</li>
+<li>
+<p>Custom machine guards and safety enclosures → C2 / C16 adjacency</p>
+</li>
+<li>
+<p>Retrofit kits for packaging machines → C2</p>
+</li>
+<li>
+<p>Low-volume electronic assemblies (cable harnesses) ✗ low margin unless defence or aero</p>
+</li>
+<li>
+<p>Solar-mounting custom brackets ✗ commodity</p>
+</li>
+<li>
+<p>Modular cold-room panel assembly ✗ crowded</p>
+</li>
+<li>
+<p>Portable AC and spot cooler rental for industry → reserve</p>
+</li>
+<li>
+<p>Locally assembled water leak shutoff kits → C4 hardware</p>
+</li>
+<li>
+<p>Industrial enclosure (IP66) customisation (cut-outs, cooling, mounting) → C13</p>
+</li>
+<li>
+<p>Kiosk and vending repair ✗ low pull</p>
+</li>
+<li>
+<p>Battery pack assembly ✗ certification heavy</p>
+</li>
+<li>
+<p>Robot-arm integration for SMEs ✗ too early; low SME automation demand evidence</p>
+</li>
+</ol>
+<h3 class="h">K. Consumables (10)</h3>
+<ol start="163">
+<li>
+<p>Commercial kitchen water filters and descaling consumables → C9</p>
+</li>
+<li>
+<p>Compressed-air filter elements, separators and drains → C3 ladder</p>
+</li>
+<li>
+<p>Sensor batteries and replacement sensors → C1 recurring</p>
+</li>
+<li>
+<p>HVAC filters ✗ crowded</p>
+</li>
+<li>
+<p>RO membranes and cartridges → C11</p>
+</li>
+<li>
+<p>Cleaning chemicals for coils → C17</p>
+</li>
+<li>
+<p>3D printing filaments retail ✗ e-commerce commodity</p>
+</li>
+<li>
+<p>Laser-cleaning protective windows and lenses ✗ small</p>
+</li>
+<li>
+<p>Industrial lubricants with oil analysis → C1 option</p>
+</li>
+<li>
+<p>Gasket kits per machine model → C2 / C9</p>
+</li>
+</ol>
+<h3 class="h">L. Distribution + application engineering / marketing-led (10)</h3>
+<ol start="173">
+<li>
+<p>Commercial kitchen spare-parts e-catalogue + photo-based AI part ID + same-day delivery → <strong>survivor (C9)</strong></p>
+</li>
+<li>
+<p>Application-engineered pump distribution (sizing + install + VFD) → C12</p>
+</li>
+<li>
+<p>Acoustic-imager rental and survey → C3</p>
+</li>
+<li>
+<p>Condition-monitoring hardware distribution for GCC (white-label) → C1 ladder</p>
+</li>
+<li>
+<p>Laser-cleaner equipment distribution after service traction → C5 ladder</p>
+</li>
+<li>
+<p>Industrial 3D scanner reseller ✗ distributor margins thin and already present</p>
+</li>
+<li>
+<p>Repair-marketplace aggregator for technicians ✗ marketplace (not this brief)</p>
+</li>
+<li>
+<p>Content-led "engineering answers" lead-gen site for UAE maintenance → cross-cutting acquisition engine</p>
+</li>
+<li>
+<p>Spare-parts sourcing desk (RFQ → global brokers) ✗ trader model, low defensibility</p>
+</li>
+<li>
+<p>Training academy for maintenance technicians ✗ standalone; keep as an add-on</p>
+</li>
+</ol><p class="top"><a href="#top">Back to top</a></p></section>
+  </main>
+</div>
